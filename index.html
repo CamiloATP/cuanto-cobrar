@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calcular Precio por Proyecto</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="my-5 pt-5">
+        <h1 class="text-center">Calcular Precio</h1>
+        <h2 class="text-center">Por trabajo | proyecto</h2>
+        <h3 class="text-center">"a realizar | terminar | cobrar"</h3>
+        <h4 class="text-center font-italic">¿Freelancer?</h4>
+    </header>
+    <main class="container mb-5">
+        <section class="d-flex flex-wrap justify-content-center">
+            <div class="col-md-8">
+                <form id="formulario">
+                    <div class="form-group">
+                        <label for="txtHoraHombre">¿Cuánto consideras que vale tú trabajo por hora?</label>
+                        <input type="text" id="txtHoraHombre" class="form-control" name="txtHoraHombre" placeholder="¿Cuánto consideras que vale tú trabajo por hora?" required>
+                    </div>
+                    <div class="form-group">
+                        <p>¿Calcular?</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="custom-control custom-radio">                            
+                                    <input type="radio" id="rbtnHoras" name="rbtnTipoCantidad" class="custom-control-input" value="Horas" required>
+                                    <label class="custom-control-label" for="rbtnHoras">Por Horas de trabajo</label>                            
+                                </div>
+                                <div class="custom-control custom-radio">                            
+                                    <input type="radio" id="rbtnDias" name="rbtnTipoCantidad" class="custom-control-input" value="Dias" required>
+                                    <label class="custom-control-label" for="rbtnDias">Por Días de trabajo</label>                            
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="custom-control custom-radio">                            
+                                    <input type="radio" id="rbtnSemanas" name="rbtnTipoCantidad" class="custom-control-input" value="Semanas" required>
+                                    <label class="custom-control-label" for="rbtnSemanas">Por Semanas de trabajo</label>                            
+                                </div>
+                                <div class="custom-control custom-radio">                            
+                                    <input type="radio" id="rbtnMeses" name="rbtnTipoCantidad" class="custom-control-input" value="Meses" required>
+                                    <label class="custom-control-label" for="rbtnMeses">Por Meses de trabajo</label>                            
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="contenedor-meses" class="col-md-6">
+                            <div class="form-group">
+                                <label id="labelMeses" for="txtMeses">Cantidad de Meses</label>
+                                <input type="text" id="txtMeses" class="mt-2 form-control" name="txtMeses" placeholder="Ingrese cantidad de meses">
+                            </div>
+                        </div>
+                        <div id="contenedor-semanas" class="col-md-6">
+                            <div class="form-group">
+                                <label id="labelSemanas" for="txtSemanas">Cantidad de Semanas</label>
+                                <input type="text" id="txtSemanas" class="mt-2 form-control" name="txtSemanas" placeholder="Ingrese cantidad de semanas">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="contenedor-dias" class="col-md-6">
+                            <div class="form-group">
+                                <label id="labelDias" for="txtDias">Cantidad de días</label>
+                                <input type="text" id="txtDias" class="mt-2 form-control" name="txtDias" placeholder="Ingrese cantidad de días">
+                            </div>
+                        </div>
+                        <div id="contenedor-horas" class="col-md-6">
+                            <div class="form-group">
+                                <label id="labelHoras" for="txtHoras">Cantidad de Horas</label>
+                                <input type="text" id="txtHoras" class="mt-2 form-control" name="txtHoras" placeholder="Ingrese cantidad de Horas">
+                            </div>
+                        </div>
+                    </div>                    
+                    <div class="form-group">
+                        <label for="txtGastosExtras">Gastos Extras</label>
+                        <input type="text" id="txtGastosExtras" class="form-control" name="txtGastosExtras" placeholder="Gastos Extras (Opcional)">
+                    </div>
+                    <div class="form-group">
+                        <label for="ddlBeneficio">Porcentaje de Beneficio del total trabajado</label>
+                        <select id="ddlBeneficio" name="ddlBeneficio" class="form-control">
+                            <option value="0.0">0%</option>
+                            <option value="0.1">10%</option>
+                            <option value="0.2">20%</option>
+                            <option value="0.3">30%</option>
+                            <option value="0.4">40%</option>
+                            <option value="0.5">50%</option>
+                            <option value="0.6">60%</option>
+                            <option value="0.7">70%</option>
+                            <option value="0.8">80%</option>
+                            <option value="0.9">90%</option>
+                            <option value="1">100%</option>
+                        </select>
+                        <div class="text-help">Normalmente el promedio es de 30%</div>
+                    </div>
+                    <div id="metodo" class="mt-5 mb-3"></div>
+                    <div id="resultado" class="mb-5 h2"></div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-lg btn-block font-20">Calcular</button>
+                    </div>
+                    <div id="message"></div>
+                </form>                
+            </div>
+        </section>
+    </main>
+    <script src="./js/app.js" defer></script>
+</body>
+</html>
