@@ -255,10 +255,12 @@
                     error = "Error, al configurar el tipo de la cantidad de trabajo";
             }
 
-            if(total)
+            if(total) {
                 resultado.innerHTML = `Total: \$${cashFormat(Number(total))}`;
-            else
+                window.location.hash = '#resultado'; // <-- Focus
+            } else {
                 alert(error); // Crear alert
+            }
         }
     }
 })();
