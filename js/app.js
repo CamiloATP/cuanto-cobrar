@@ -3,9 +3,9 @@
     const resultado = document.getElementById('resultado');
     const metodo = document.getElementById('metodo');    
     let tipo = ""; 
-    let message = ""; 
     let error = "";
     let total = 0;
+    let message = "";
 
     /**
      * Number.prototype.cashFormat(n, x, s, c)
@@ -24,31 +24,18 @@
         return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
     };
 
-    /**
-     * String.prototype.comeBackCash for Number.prototype.cashFormat(n, x, s, c)
-     * ---
-     * @return Number
-     * */
-    // String.prototype.comeBackNumber = function() {
     const comeBackCash = (str) => {
-        return str.replace(/\./g, '');
+        return Number(str.replace(/\./g, '').replace(/\,/g, ''));
     }
 
     // Proceso cuando aún no se envía el formulario con sus campos
     const cargar = () => {
-        // const horaHombre = document.querySelector('[name=txtHoraHombre]');
-
-        // horaHombre.onblur = () => {
-        //     horaHombre.value = cashFormat(Number(horaHombre.value));
-        // };
-
         const rbtnTipoCantidad = document.querySelectorAll('[name=rbtnTipoCantidad]');
 
         const labelHoras = document.getElementById('labelHoras');
         if(labelHoras) labelHoras.hidden = true;
 
-        const horas = document.querySelector('[name=txtHoras]');
-        // if(horas) horas.hidden = true;
+        const horas = document.getElementById('txtHoras');
 
         const contenedor_horas = document.getElementById('contenedor-horas');
         if(contenedor_horas) contenedor_horas.hidden = true;
@@ -56,8 +43,7 @@
         const labelDias = document.getElementById('labelDias');
         if(labelDias) labelDias.hidden = true;
 
-        const dias = document.querySelector('[name=txtDias]');
-        // if(dias) dias.hidden = true;
+        const dias = document.getElementById('txtDias');
 
         const contenedor_dias = document.getElementById('contenedor-dias');
         if(contenedor_dias) contenedor_dias.hidden = true;
@@ -65,8 +51,7 @@
         const labelSemanas = document.getElementById('labelSemanas');
         if(labelSemanas) labelSemanas.hidden = true;
 
-        const semanas = document.querySelector('[name=txtSemanas]');
-        // if(semanas) semanas.hidden = true;
+        const semanas = document.getElementById('txtSemanas');
 
         const contenedor_semanas = document.getElementById('contenedor-semanas');
         if(contenedor_semanas) contenedor_semanas.hidden = true;
@@ -74,11 +59,10 @@
         const labelMeses = document.getElementById('labelMeses');
         if(labelMeses) labelMeses.hidden = true;
 
-        const meses = document.querySelector('[name=txtMeses]');
+        const meses = document.getElementById('txtMeses');
         
         if(meses) {
-            // meses.hidden = true;
-            
+            // meses.hidden = true;            
             meses.onkeyup = () => {
                 semanas.value = Number(meses.value) * 4;
             };
@@ -87,12 +71,6 @@
         const contenedor_meses = document.getElementById('contenedor-meses');
         if(contenedor_meses) contenedor_meses.hidden = true;
         
-        // const gastosExtras = document.querySelector('[name=txtGastosExtras]');
-
-        // gastosExtras.onblur = () => {
-        //     gastosExtras.value = cashFormat(Number(gastosExtras.value));
-        // };      
-
         for (let i = 0; i < rbtnTipoCantidad.length; i++)
         {  
             rbtnTipoCantidad[i].onchange = () => {
@@ -197,12 +175,12 @@
         formulario.onsubmit = (e) => {
             e.preventDefault();
 
-            const horaHombre = Number(document.querySelector('[name=txtHoraHombre]').value);
-            const meses = Number(document.querySelector('[name=txtMeses]').value);            
-            const semanas = Number(document.querySelector('[name=txtSemanas]').value);
-            const dias = Number(document.querySelector('[name=txtDias]').value);
-            const horas = Number(document.querySelector('[name=txtHoras]').value);
-            const gastosExtras = Number(document.querySelector('[name=txtGastosExtras]').value);
+            const horaHombre = comeBackCash(document.getElementById('txtHoraHombre').value);
+            const meses = Number(document.getElementById('txtMeses').value);            
+            const semanas = Number(document.getElementById('txtSemanas').value);
+            const dias = Number(document.getElementById('txtDias').value);
+            const horas = Number(document.getElementById('txtHoras').value);
+            const gastosExtras = comeBackCash(document.getElementById('txtGastosExtras').value);
 
             // Futuro input text
             const porcentajeBeneficio = parseFloat(document.getElementById('ddlBeneficio').value);
@@ -221,7 +199,6 @@
                     }
                     break;
                 case 'días':
-                    // ((Hora Hombre * (horas * días)) + Gastos Extras) + ((Hora Hombre * (horas * días)) + Gastos Extras) * porcentajeBeneficio
                     if(gastosExtras) {
                         total = ((horaHombre * (horas * dias)) + gastosExtras) + ((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio;
                         metodo.innerHTML += '((Valor por Hora * (Cantidad de Horas * Días)) + Gastos Extras) + ((Valor por Hora * (Cantidad de Horas * Días)) + Gastos Extras) * Porcentaje del beneficio';
@@ -231,7 +208,6 @@
                     }
                     break;
                 case 'semanas':
-                    // ((Hora Hombre * ((horas * días) * semanas)) + Gastos Extras) + ((Hora Hombre * ((horas * días) * semanas)) + Gastos Extras) * porcentajeBeneficio
                     if(gastosExtras) {
                         total = (horaHombre * (horas * dias * semanas)) + gastosExtras + (horaHombre * (horas * dias * semanas)) * porcentajeBeneficio;
                         metodo.innerHTML += '((Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + Gastos Extras) + ((Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + Gastos Extras) * Porcentaje del beneficio';
@@ -241,8 +217,6 @@
                     }
                     break;
                 case 'meses':
-                    // Si es meses la semana se calculara automaticamente y se podra editar
-                    // ((Hora Hombre * (((horas * días) * semanas) * meses)) + Gastos Extras) + ((Hora Hombre * (((horas * días) * semanas) * meses)) + Gastos Extras) * porcentajeBeneficio
                     if(gastosExtras) {
                         total = (horaHombre * (horas * dias * semanas * meses)) + gastosExtras + (horaHombre * (horas * dias * semanas * meses)) * porcentajeBeneficio;
                         metodo.innerHTML += '((Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + Gastos Extras) + ((Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + Gastos Extras) * Porcentaje del beneficio';
@@ -255,8 +229,8 @@
                     error = "Error, al configurar el tipo de la cantidad de trabajo";
             }
 
-            if(total) {
-                resultado.innerHTML = `Total: \$${cashFormat(Number(total))}`;
+            if(!isNaN(total)) {
+                resultado.innerHTML = `Total: \$${cashFormat(total)}`;
                 window.location.hash = '#resultado'; // <-- Focus
             } else {
                 alert(error); // Crear alert
