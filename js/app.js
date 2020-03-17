@@ -196,7 +196,11 @@
             let beneficio = document.getElementById('txtBeneficio').value.trim();
 
             if(/\%/g.test(beneficio)) {
-               beneficio = beneficio.replace(/\%/g, '');
+                beneficio = beneficio.replace(/\%/g, '');
+            }
+
+            if(isNaN(beneficio)) {
+                error.push('Error, ingrese el porcentaje de beneficios como dato númerico o decimal(0.00)');
             }
             
             const porcentajeBeneficio = (Number(beneficio) / 100).toFixed(2) || 0.0;
@@ -211,10 +215,11 @@
                         } else {
                             if(gastosExtras) {
                                 total = ((horaHombre * horas) + gastosExtras) + ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio;
-                                formula = `((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)}* <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras}) + ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)}* <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras}) * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${ beneficio + '%'})`;
+                                formula = `((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)}* <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras}) + ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)}* <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras}) * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)`;
+                                console.log(typeof beneficio)
                             } else {
                                 total = (horaHombre * horas) + (horaHombre * horas) * porcentajeBeneficio;
-                                formula = `(<strong>Valor por Hora</strong>: ${horaHombre} * <strong>Cantidad de Horas</strong>: ${horas}) + (<strong>Valor por Hora</strong>: ${horaHombre} * <strong>Cantidad de Horas</strong>: ${horas}) * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${ beneficio + '%'})`;
+                                formula = `(<strong>Valor por Hora</strong>: ${horaHombre} * <strong>Cantidad de Horas</strong>: ${horas}) + (<strong>Valor por Hora</strong>: ${horaHombre} * <strong>Cantidad de Horas</strong>: ${horas}) * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)`;
                             }
                         }
                         break;
