@@ -1,3 +1,11 @@
 .font-20{
     font-size: 20px;
 }
+
+#metodo {
+    color: #0c0c0c;
+}
+
+strong {
+    font-weight: bold;
+}

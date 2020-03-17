@@ -2,10 +2,10 @@
     const formulario = document.getElementById('formulario');
     const resultado = document.getElementById('resultado');
     const metodo = document.getElementById('metodo');    
-    let tipo = ""; 
-    let error = "";
+    let formula = '';
+    let tipo = ''; 
+    let error = [];
     let total = 0;
-    let message = "";
 
     /**
      * Number.prototype.cashFormat(n, x, s, c)
@@ -161,11 +161,20 @@
                             tipo = 'meses';
                             break;
                         default:
-                            error = 'Seleccione un campo!!';
+                            error.push('Seleccione un campo!!');
                     }
                 }       
             }
         }    
+    }
+
+    const validarData = data => {
+        if(!isNaN(data) && data !== '' && data !== undefined && data !== null && data !== 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     if(formulario)
@@ -174,67 +183,95 @@
 
         formulario.onsubmit = (e) => {
             e.preventDefault();
-
-            const horaHombre = comeBackCash(document.getElementById('txtHoraHombre').value);
-            const meses = Number(document.getElementById('txtMeses').value);            
-            const semanas = Number(document.getElementById('txtSemanas').value);
-            const dias = Number(document.getElementById('txtDias').value);
-            const horas = Number(document.getElementById('txtHoras').value);
-            const gastosExtras = comeBackCash(document.getElementById('txtGastosExtras').value);
+            
+            const horaHombre = comeBackCash(document.getElementById('txtHoraHombre').value.trim());
+            const meses = Number(document.getElementById('txtMeses').value.trim());            
+            const semanas = Number(document.getElementById('txtSemanas').value.trim());
+            const dias = Number(document.getElementById('txtDias').value.trim());
+            const horas = Number(document.getElementById('txtHoras').value.trim());
+            const gastosExtras = comeBackCash(document.getElementById('txtGastosExtras').value.trim());
 
             // Futuro input text
-            const porcentajeBeneficio = parseFloat(document.getElementById('ddlBeneficio').value);
+            // const porcentajeBeneficio = parseFloat(document.getElementById('ddlBeneficio').value);
+            let beneficio = document.getElementById('txtBeneficio').value.trim();
 
-            // Método utilizado
-            metodo.innerHTML = '<span class=" h4 font-weight-bold">Cálculos realizados:</span><br>';
-
-            switch (tipo) {
-                case 'horas':
-                    if(gastosExtras) {
-                        total = ((horaHombre * horas) + gastosExtras) + ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio;
-                        metodo.innerHTML += '((Valor por Hora * Cantidad de Horas) + Gastos Extras) + ((Valor por Hora * Cantidad de Horas) + Gastos Extras) * Porcentaje del beneficio';
-                    } else {
-                        total = (horaHombre * horas) + (horaHombre * horas) * porcentajeBeneficio;
-                        metodo.innerHTML += '(Valor por Hora * Cantidad de Horas) + (Valor por Hora * Cantidad de Horas) * Porcentaje del beneficio';
-                    }
-                    break;
-                case 'días':
-                    if(gastosExtras) {
-                        total = ((horaHombre * (horas * dias)) + gastosExtras) + ((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio;
-                        metodo.innerHTML += '((Valor por Hora * (Cantidad de Horas * Días)) + Gastos Extras) + ((Valor por Hora * (Cantidad de Horas * Días)) + Gastos Extras) * Porcentaje del beneficio';
-                    } else {
-                        total = (horaHombre * (horas * dias)) + (horaHombre * (horas * dias)) * porcentajeBeneficio;
-                        metodo.innerHTML += '(Valor por Hora * (Cantidad de Horas * Días)) + (Valor por Hora * (Cantidad de Horas * Días)) * Porcentaje del beneficio';
-                    }
-                    break;
-                case 'semanas':
-                    if(gastosExtras) {
-                        total = (horaHombre * (horas * dias * semanas)) + gastosExtras + (horaHombre * (horas * dias * semanas)) * porcentajeBeneficio;
-                        metodo.innerHTML += '((Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + Gastos Extras) + ((Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + Gastos Extras) * Porcentaje del beneficio';
-                    } else {
-                        total = (horaHombre * (horas * dias * semanas)) + (horaHombre * (horas * dias * semanas)) * porcentajeBeneficio;
-                        metodo.innerHTML += '(Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + (Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) * Porcentaje del beneficio';
-                    }
-                    break;
-                case 'meses':
-                    if(gastosExtras) {
-                        total = (horaHombre * (horas * dias * semanas * meses)) + gastosExtras + (horaHombre * (horas * dias * semanas * meses)) * porcentajeBeneficio;
-                        metodo.innerHTML += '((Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + Gastos Extras) + ((Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + Gastos Extras) * Porcentaje del beneficio';
-                    } else {
-                        total = (horaHombre * (horas * dias * semanas * meses)) + (horaHombre * (horas * dias * semanas * meses)) * porcentajeBeneficio;
-                        metodo.innerHTML += '(Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + (Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) * Porcentaje del beneficio';
-                    }
-                    break;
-                default:
-                    error = "Error, al configurar el tipo de la cantidad de trabajo";
+            if(/\%/g.test(beneficio)) {
+               beneficio = beneficio.replace(/\%/g, '');
             }
+            
+            const porcentajeBeneficio = (Number(beneficio) / 100).toFixed(2) || 0.0;
 
-            if(!isNaN(total)) {
+            if(!validarData(horaHombre)) {
+                error.push('Error, ingrese el valor por hora');
+            } else {
+                switch (tipo) {
+                    case 'horas':
+                        if(!validarData(horas)) {
+                            error.push('Error, ingrese la cantidad de horas trabajadas');
+                        } else {
+                            if(gastosExtras) {
+                                total = ((horaHombre * horas) + gastosExtras) + ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio;
+                                formula = `((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)}* <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras}) + ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)}* <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras}) * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${ beneficio + '%'})`;
+                            } else {
+                                total = (horaHombre * horas) + (horaHombre * horas) * porcentajeBeneficio;
+                                formula = `(<strong>Valor por Hora</strong>: ${horaHombre} * <strong>Cantidad de Horas</strong>: ${horas}) + (<strong>Valor por Hora</strong>: ${horaHombre} * <strong>Cantidad de Horas</strong>: ${horas}) * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${ beneficio + '%'})`;
+                            }
+                        }
+                        break;
+                    case 'días':
+                        if(!validarData(dias)) {
+                            error.push('Error, ingrese los días trabajados');
+                        } else {
+                            if(gastosExtras) {    
+                                total = ((horaHombre * (horas * dias)) + gastosExtras) + ((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio;
+                                formula = '((Valor por Hora * (Cantidad de Horas * Días)) + Gastos Extras) + ((Valor por Hora * (Cantidad de Horas * Días)) + Gastos Extras) * Porcentaje del beneficio';
+                            } else {
+                                total = (horaHombre * (horas * dias)) + (horaHombre * (horas * dias)) * porcentajeBeneficio;
+                                formula = '(Valor por Hora * (Cantidad de Horas * Días)) + (Valor por Hora * (Cantidad de Horas * Días)) * Porcentaje del beneficio';
+                            }
+                        }
+    
+                        break;
+                    case 'semanas':
+                        if(!validarData(dias) && !validarData(semanas)) {
+                            error.push('Error, ingrese los días y la cantidad semanas trabajados');
+                        } else {
+                            if(gastosExtras) {
+                                total = (horaHombre * (horas * dias * semanas)) + gastosExtras + (horaHombre * (horas * dias * semanas)) * porcentajeBeneficio;
+                                formula = '((Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + Gastos Extras) + ((Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + Gastos Extras) * Porcentaje del beneficio';
+                            } else {
+                                total = (horaHombre * (horas * dias * semanas)) + (horaHombre * (horas * dias * semanas)) * porcentajeBeneficio;
+                                formula = '(Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + (Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) * Porcentaje del beneficio';
+                            }
+                        }
+                        break;
+                    case 'meses':
+                        if(!validarData(dias) && !validarData(semanas) && !validarData(meses)) {
+                            error.push('Error, ingrese los días, cantidad semanas y meses trabajados');
+                        } else {
+                            if(gastosExtras) {
+                                total = (horaHombre * (horas * dias * semanas * meses)) + gastosExtras + (horaHombre * (horas * dias * semanas * meses)) * porcentajeBeneficio;
+                                formula = '((Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + Gastos Extras) + ((Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + Gastos Extras) * Porcentaje del beneficio';
+                            } else {
+                                total = (horaHombre * (horas * dias * semanas * meses)) + (horaHombre * (horas * dias * semanas * meses)) * porcentajeBeneficio;
+                                formula = '(Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + (Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) * Porcentaje del beneficio';
+                            }
+                        }
+                        break;
+                    default:
+                        error.push('Error, al configurar el tipo de la cantidad de trabajo');
+                }
+            }            
+
+            if(!isNaN(total) && error.length === 0) {
+                // Método(formula Math) utilizado
+                metodo.innerHTML = '<span class=" h4 font-weight-bold">Cálculos realizados:</span><br>' + formula;
                 resultado.innerHTML = `Total: \$${cashFormat(total)}`;
                 window.location.hash = '#resultado'; // <-- Focus
             } else {
-                alert(error); // Crear alert
+                error.map(data => alert(data));
+                error = [];
             }
         }
-    }
+    }    
 })();
