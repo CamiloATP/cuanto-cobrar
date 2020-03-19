@@ -6,7 +6,7 @@ Demo: [calcular-precio-por-proyecto](https://camiloatp.github.io/calcular-trabaj
 
 Calcular el valor de tu proyecto o trabajo realizado. En base al valor de tu hora de trabajo, el proyecto se encuentra con el formato de moneda **CLP** - Chile.
 
-Dado los distintos formatos de monedas internacionales, se puede pasar por parametros datos a la función en base de la necesidad de utilizar otros formatos sin ningún problema.
+Dado los distintos formatos de monedas internacionales, se puede pasar por parametros datos a la función en base a la necesidad de utilizar otros formatos sin ningún problema.
 
 ```
 /**
