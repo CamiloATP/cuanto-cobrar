@@ -169,12 +169,28 @@
     }
 
     const validarData = data => {
-        if(!isNaN(data) && data !== '' && data !== undefined && data !== null && data !== 0)
+        if(!isNaN(data) && data !== '' && data !== undefined && data !== null && data > 0)
         {
             return true;
         }
 
         return false;
+    }
+
+    const fadeOutMessage = node => {
+        setTimeout(() => {
+            node.style.opacity = 0.5;
+            setTimeout(() => {
+                node.style.opacity = 0.2;
+                setTimeout(() => {
+                    node.removeAttribute('style');
+                    node.innerHTML = '';
+                    if(node.querySelector('#error')){
+                        node.querySelector('#error').remove();
+                    }
+                }, 150);
+            }, 150);
+        }, 2700);
     }
 
     if(formulario)
@@ -191,8 +207,16 @@
             const horas = Number(document.getElementById('txtHoras').value.trim());
             const gastosExtras = comeBackCash(document.getElementById('txtGastosExtras').value.trim());
 
-            // Futuro input text
-            // const porcentajeBeneficio = parseFloat(document.getElementById('ddlBeneficio').value);
+            if(!validarData(horaHombre)) {
+                error.push('Error, ingrese el valor por hora');
+            }
+
+            if(gastosExtras) {
+                if(!validarData(gastosExtras)) {
+                    error.push('Error, ingrese valor válido de gastos extras');
+                }
+            }
+
             let beneficio = document.getElementById('txtBeneficio').value.trim();
 
             if(/\%/g.test(beneficio)) {
@@ -205,76 +229,112 @@
             
             const porcentajeBeneficio = (Number(beneficio) / 100).toFixed(2) || 0.0;
 
-            if(!validarData(horaHombre)) {
-                error.push('Error, ingrese el valor por hora');
-            } else {
-                switch (tipo) {
-                    case 'horas':
-                        if(!validarData(horas)) {
-                            error.push('Error, ingrese la cantidad de horas trabajadas');
-                        } else {
-                            if(gastosExtras) {
-                                total = ((horaHombre * horas) + gastosExtras) + ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio;
-                                formula = `((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)}* <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras}) + ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)}* <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras}) * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)`;
-                                console.log(typeof beneficio)
-                            } else {
-                                total = (horaHombre * horas) + (horaHombre * horas) * porcentajeBeneficio;
-                                formula = `(<strong>Valor por Hora</strong>: ${horaHombre} * <strong>Cantidad de Horas</strong>: ${horas}) + (<strong>Valor por Hora</strong>: ${horaHombre} * <strong>Cantidad de Horas</strong>: ${horas}) * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)`;
-                            }
-                        }
-                        break;
-                    case 'días':
-                        if(!validarData(dias)) {
-                            error.push('Error, ingrese los días trabajados');
-                        } else {
-                            if(gastosExtras) {    
-                                total = ((horaHombre * (horas * dias)) + gastosExtras) + ((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio;
-                                formula = '((Valor por Hora * (Cantidad de Horas * Días)) + Gastos Extras) + ((Valor por Hora * (Cantidad de Horas * Días)) + Gastos Extras) * Porcentaje del beneficio';
-                            } else {
-                                total = (horaHombre * (horas * dias)) + (horaHombre * (horas * dias)) * porcentajeBeneficio;
-                                formula = '(Valor por Hora * (Cantidad de Horas * Días)) + (Valor por Hora * (Cantidad de Horas * Días)) * Porcentaje del beneficio';
-                            }
-                        }
-    
-                        break;
-                    case 'semanas':
-                        if(!validarData(dias) && !validarData(semanas)) {
-                            error.push('Error, ingrese los días y la cantidad semanas trabajados');
-                        } else {
-                            if(gastosExtras) {
-                                total = (horaHombre * (horas * dias * semanas)) + gastosExtras + (horaHombre * (horas * dias * semanas)) * porcentajeBeneficio;
-                                formula = '((Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + Gastos Extras) + ((Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + Gastos Extras) * Porcentaje del beneficio';
-                            } else {
-                                total = (horaHombre * (horas * dias * semanas)) + (horaHombre * (horas * dias * semanas)) * porcentajeBeneficio;
-                                formula = '(Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) + (Valor por Hora * ((Cantidad de Horas * Días) * Semanas)) * Porcentaje del beneficio';
-                            }
-                        }
-                        break;
-                    case 'meses':
-                        if(!validarData(dias) && !validarData(semanas) && !validarData(meses)) {
-                            error.push('Error, ingrese los días, cantidad semanas y meses trabajados');
-                        } else {
-                            if(gastosExtras) {
-                                total = (horaHombre * (horas * dias * semanas * meses)) + gastosExtras + (horaHombre * (horas * dias * semanas * meses)) * porcentajeBeneficio;
-                                formula = '((Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + Gastos Extras) + ((Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + Gastos Extras) * Porcentaje del beneficio';
-                            } else {
-                                total = (horaHombre * (horas * dias * semanas * meses)) + (horaHombre * (horas * dias * semanas * meses)) * porcentajeBeneficio;
-                                formula = '(Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) + (Valor por Hora * (((Cantidad de Horas * Días) * Semanas) * Meses )) * Porcentaje del beneficio';
-                            }
-                        }
-                        break;
-                    default:
-                        error.push('Error, al configurar el tipo de la cantidad de trabajo');
-                }
-            }            
+            switch (tipo) {
+                case 'horas':
+                    if(!validarData(horas)) {
+                        error.push('Error, ingrese la cantidad de horas trabajadas');
+                    }
+                    
+                    if(error.length === 0) {
+                        formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`; 
+
+                        formula += `<span class="h5">Beneficio</span>: <strong>Costo</strong>: \$${cashFormat((horaHombre * horas) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)<hr>`;
+
+                        formula += `<span class="h5">Costo</span>: \$${cashFormat((horaHombre * horas) + gastosExtras)} + <span class="h5">Beneficio</span>: \$${cashFormat(((horaHombre * horas) + gastosExtras) * porcentajeBeneficio)}`;
+
+                        total = ((horaHombre * horas) + gastosExtras) + ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio;
+                    }
+                    break;
+                case 'días':
+                    if(!validarData(horas)) {
+                        error.push('Error, ingrese la cantidad de horas trabajadas');
+                    }
+
+                    if(!validarData(dias)) {
+                        error.push('Error, ingrese los días trabajados');
+                    } 
+
+                    if(error.length === 0) {
+                        formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * (<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`;
+
+                        formula += `<span class="h5">Beneficio</span>: <strong>Costo</strong>: \$${cashFormat((horaHombre * (horas * dias)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)<hr>`;
+
+                        formula += `<span class="h5">Costo</span>: \$${cashFormat((horaHombre * (horas * dias)) + gastosExtras)} + <span class="h5">Beneficio</span>: \$${cashFormat(((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio)}`;
+
+                        total = ((horaHombre * (horas * dias)) + gastosExtras) + ((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio;
+                    }    
+                    break;
+                case 'semanas':
+                    if(!validarData(horas)) {
+                        error.push('Error, ingrese la cantidad de horas trabajadas');
+                    }
+
+                    if(!validarData(dias)) {
+                        error.push('Error, ingrese los días trabajados');
+                    } 
+
+                    if(!validarData(semanas)) {
+                        error.push('Error, ingrese la cantidad de semanas trabajadas');
+                    }
+
+                    if(error.length === 0) {
+                        formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * ((<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias}) * <strong>Semanas</strong>: ${semanas})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`;
+
+                        formula += `<span class="h5">Beneficio</span>: <strong>Costo</strong>: \$${cashFormat((horaHombre * (horas * dias * semanas)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)<hr>`;
+
+                        formula += `<span class="h5">Costo</span>: \$${cashFormat((horaHombre * (horas * dias * semanas)) + gastosExtras)} + <span class="h5">Beneficio</span>: \$${cashFormat(((horaHombre * (horas * dias * semanas)) + gastosExtras) * porcentajeBeneficio)}`; 
+
+                        total = ((horaHombre * (horas * dias * semanas)) + gastosExtras) + ((horaHombre * (horas * dias * semanas)) + gastosExtras) * porcentajeBeneficio;
+                    }
+                    break;
+                case 'meses':
+                    if(!validarData(horas)) {
+                        error.push('Error, ingrese la cantidad de horas trabajadas');
+                    }
+
+                    if(!validarData(dias)) {
+                        error.push('Error, ingrese los días trabajados');
+                    } 
+                    
+                    if(!validarData(semanas)) {
+                        error.push('Error, ingrese la cantidad de semanas trabajadas');
+                    }
+
+                    if(!validarData(meses)) {
+                        error.push('Error, ingrese los meses trabajados');
+                    }
+
+                    if(error.length === 0) {                        
+                        formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * (((<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias}) * <strong>Semanas</strong>: ${semanas}) * <strong>Meses</strong>: ${meses})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`
+                        
+                        formula += `<span class="h5">Beneficio</span>: <strong>Costo</strong>: \$${cashFormat((horaHombre * (horas * dias * semanas * meses)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)<hr>`;
+                        
+                        formula += `<span class="h5">Costo</span>: \$${cashFormat((horaHombre * (horas * dias * semanas * meses)) + gastosExtras)} + <span class="h5">Beneficio</span>: \$${cashFormat(((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) * porcentajeBeneficio)}`;
+
+                        total = ((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) + ((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) * porcentajeBeneficio;
+                    }
+                    break;
+                default:
+                    error.push('Error, al configurar el tipo de la cantidad de trabajo');
+            }        
 
             if(!isNaN(total) && error.length === 0) {
                 // Método(formula Math) utilizado
-                metodo.innerHTML = '<span class=" h4 font-weight-bold">Cálculos realizados:</span><br>' + formula;
+                metodo.innerHTML = '<span class=" h4 font-weight-bold mb-2">Cálculos realizados:</span><hr>' + formula;
+                resultado.className += ' h2';
                 resultado.innerHTML = `Total: \$${cashFormat(total)}`;
                 window.location.hash = '#resultado'; // <-- Focus
             } else {
-                error.map(data => alert(data));
+                metodo.innerHTML = '';
+                resultado.classList.remove('h2');
+                resultado.innerHTML = '';
+
+                error.map(data => {
+                    resultado.innerHTML += `<div id="error" class="alert alert-dismissible alert-danger">
+                        <p class="mb-0">${data}</p>
+                    </div>`;
+                    fadeOutMessage(resultado);
+                });
                 error = [];
             }
         }
