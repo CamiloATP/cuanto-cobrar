@@ -1,5 +1,5 @@
-# Calcular precio por trabajo | proyecto #
-### "A realizar | terminar | cobrar" ###
+# Calcular precio por trabajo o proyecto #
+### "A realizar, terminar y/o cobrar" ###
 #### ¿Freelancer? ####
 
 Demo: [calcular-precio-por-proyecto](https://camiloatp.github.io/calcular-trabajo/)
