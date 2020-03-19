@@ -1,13 +1,12 @@
-# Calcular el valor de tu proyecto o trabajo realizado  #
-## En base al valor de tu hora de trabajo ##
-
-Demo: [https://camiloatp.github.io/calcular-trabajo/](URL "https://camiloatp.github.io/calcular-trabajo/")
-# ----------------------------------------
-
 # Calcular Precio #
 ## Por trabajo | proyecto ##
 ### "a realizar | terminar | cobrar" ####
 #### ¿Freelancer? #####
+
+Demo: [calcular-precio-proyecto/](URL "https://camiloatp.github.io/calcular-trabajo/")
+
+Calcular el valor de tu proyecto o trabajo realizado.
+En base al valor de tu hora de trabajo.
 
 ### Horas ###
 total = ((horaHombre * horas) + gastosExtras) + ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio;
