@@ -8,7 +8,9 @@ Calcular el valor de tu proyecto o trabajo realizado.
 En base al valor de tu hora de trabajo.
 
 ### Horas ###
+```
 total = ((horaHombre * horas) + gastosExtras) + ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio;
+```
 
 ### Días ###
 ```
