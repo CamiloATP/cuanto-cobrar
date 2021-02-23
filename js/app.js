@@ -382,3 +382,5 @@
         }
     }    
 })();
+
+// TODO: Refactor the code, to make it more readable and scalable.
