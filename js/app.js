@@ -1,11 +1,12 @@
-(function(){
+(function() {
     const formulario = document.getElementById('formulario');
     const resultado = document.getElementById('resultado');
     const metodo = document.getElementById('metodo');    
+    
     let formula = '';
     let tipo = ''; 
-    let error = [];
     let total = 0;
+    let error = [];
 
     /**
      * Number.prototype.cashFormat(n, x, s, c)
@@ -24,51 +25,90 @@
         return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
     };
 
+    /**
+     * Come back cash to origin numeric
+     * ---
+     * @param String str
+     * @return Int 
+     */
     const comeBackCash = (str) => {
         return Number(str.replace(/\./g, '').replace(/\,/g, ''));
     }
 
-    // Proceso cuando aún no se envía el formulario con sus campos
+    /**
+     * Validar campo númerico para operaciones internas
+     * ---
+     * @param Int data 
+     * @return Boolean
+     */
+    const validarData = data => {
+        if(!isNaN(data) && data !== '' && data !== undefined && data !== null && data > 0) return true;
+
+        return false;
+    }
+
+    /**
+     * Transition effect for errors
+     * ---
+     * @param NodeHTML node
+     * @return void
+     */
+    const fadeOutMessage = node => {
+        setTimeout(() => {
+            node.style.opacity = 0.5;
+            setTimeout(() => {
+                node.style.opacity = 0.2;
+                setTimeout(() => {
+                    node.removeAttribute('style');
+                    node.innerHTML = '';
+                    if(node.querySelector('#error')) node.querySelector('#error').remove();
+                }, 150);
+            }, 150);
+        }, 2700);
+    }
+
+    /**
+     * Cargar valores por defecto del formulario. 
+     * Interacción del usuario con los campos de horas, días, semanas y meses.
+     * ---
+     * @return void
+     */
     const cargar = () => {
         const rbtnTipoCantidad = document.querySelectorAll('[name=rbtnTipoCantidad]');
 
         const labelHoras = document.getElementById('labelHoras');
-        if(labelHoras) labelHoras.hidden = true;
-
         const horas = document.getElementById('txtHoras');
-
         const contenedor_horas = document.getElementById('contenedor-horas');
-        if(contenedor_horas) contenedor_horas.hidden = true;
-
+        
         const labelDias = document.getElementById('labelDias');
-        if(labelDias) labelDias.hidden = true;
-
         const dias = document.getElementById('txtDias');
-
         const contenedor_dias = document.getElementById('contenedor-dias');
-        if(contenedor_dias) contenedor_dias.hidden = true;
-
+        
         const labelSemanas = document.getElementById('labelSemanas');
-        if(labelSemanas) labelSemanas.hidden = true;
-
         const semanas = document.getElementById('txtSemanas');
-
         const contenedor_semanas = document.getElementById('contenedor-semanas');
-        if(contenedor_semanas) contenedor_semanas.hidden = true;
         
         const labelMeses = document.getElementById('labelMeses');
-        if(labelMeses) labelMeses.hidden = true;
-
         const meses = document.getElementById('txtMeses');
+        const contenedor_meses = document.getElementById('contenedor-meses');
+
+        if(labelHoras) labelHoras.hidden = true;
+        if(contenedor_horas) contenedor_horas.hidden = true;
         
-        if(meses) {
-            // meses.hidden = true;            
+        if(labelDias) labelDias.hidden = true;
+        if(contenedor_dias) contenedor_dias.hidden = true;
+        
+        if(labelSemanas) labelSemanas.hidden = true;
+        if(contenedor_semanas) contenedor_semanas.hidden = true; 
+        
+        if(labelMeses) labelMeses.hidden = true;       
+        if(meses) 
+        {
+            // meses.hidden = true;
             meses.onkeyup = () => {
                 semanas.value = Number(meses.value) * 4;
             };
         }
-
-        const contenedor_meses = document.getElementById('contenedor-meses');
         if(contenedor_meses) contenedor_meses.hidden = true;
         
         for (let i = 0; i < rbtnTipoCantidad.length; i++)
@@ -76,7 +116,8 @@
             rbtnTipoCantidad[i].onchange = () => {
                 if(rbtnTipoCantidad[i].checked === true)
                 {
-                    switch(rbtnTipoCantidad[i].value){
+                    switch(rbtnTipoCantidad[i].value) 
+                    {
                         case 'Horas':
                             labelHoras.hidden = false;
                             labelHoras.innerHTML = 'Cantidad de horas';
@@ -168,33 +209,9 @@
         }    
     }
 
-    const validarData = data => {
-        if(!isNaN(data) && data !== '' && data !== undefined && data !== null && data > 0)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    const fadeOutMessage = node => {
-        setTimeout(() => {
-            node.style.opacity = 0.5;
-            setTimeout(() => {
-                node.style.opacity = 0.2;
-                setTimeout(() => {
-                    node.removeAttribute('style');
-                    node.innerHTML = '';
-                    if(node.querySelector('#error')){
-                        node.querySelector('#error').remove();
-                    }
-                }, 150);
-            }, 150);
-        }, 2700);
-    }
-
     if(formulario)
     {
+        // Se cargan los valores por defecto e interacciones previa del usuario
         cargar();
 
         formulario.onsubmit = (e) => {
@@ -206,123 +223,147 @@
             const dias = Number(document.getElementById('txtDias').value.trim());
             const horas = Number(document.getElementById('txtHoras').value.trim());
             const gastosExtras = comeBackCash(document.getElementById('txtGastosExtras').value.trim());
+            let beneficio = document.getElementById('txtBeneficio').value.trim();
 
-            if(!validarData(horaHombre)) {
+            // Validaciones globales
+            if(!validarData(horaHombre)) 
+            {
                 error.push('Error, ingrese el valor por hora');
             }
 
-            if(gastosExtras) {
+            if(gastosExtras) 
+            {
                 if(!validarData(gastosExtras)) {
                     error.push('Error, ingrese valor válido de gastos extras');
                 }
             }
 
-            let beneficio = document.getElementById('txtBeneficio').value.trim();
-
-            if(/\%/g.test(beneficio)) {
+            // Clean \%
+            if(/\%/g.test(beneficio)) 
+            {
                 beneficio = beneficio.replace(/\%/g, '');
             }
 
-            if(isNaN(beneficio)) {
+            if(isNaN(beneficio)) 
+            {
                 error.push('Error, ingrese el porcentaje de beneficios como dato númerico o decimal(0.00)');
             }
             
             const porcentajeBeneficio = (Number(beneficio) / 100).toFixed(2) || 0.0;
 
+            // Tipo de interación a calcular
             switch (tipo) {
                 case 'horas':
-                    if(!validarData(horas)) {
+                    if(!validarData(horas)) 
+                    {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
                     }
                     
-                    if(error.length === 0) {
+                    if(error.length === 0) 
+                    {
                         formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`; 
 
-                        formula += `<span class="h5">Beneficio</span>: <strong>Costo</strong>: \$${cashFormat((horaHombre * horas) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)<hr>`;
+                        formula += `<span class="h5">Beneficio</span>: (<strong>Costo</strong>: \$${cashFormat((horaHombre * horas) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}%) <= (${beneficio!== '' ? beneficio : 0}%)<hr>`;
 
                         formula += `<span class="h5">Costo</span>: \$${cashFormat((horaHombre * horas) + gastosExtras)} + <span class="h5">Beneficio</span>: \$${cashFormat(((horaHombre * horas) + gastosExtras) * porcentajeBeneficio)}`;
 
                         total = ((horaHombre * horas) + gastosExtras) + ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio;
                     }
+
                     break;
                 case 'días':
-                    if(!validarData(horas)) {
+                    if(!validarData(horas)) 
+                    {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
                     }
 
-                    if(!validarData(dias)) {
+                    if(!validarData(dias)) 
+                    {
                         error.push('Error, ingrese los días trabajados');
                     } 
 
-                    if(error.length === 0) {
+                    if(error.length === 0) 
+                    {
                         formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * (<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`;
 
-                        formula += `<span class="h5">Beneficio</span>: <strong>Costo</strong>: \$${cashFormat((horaHombre * (horas * dias)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)<hr>`;
+                        formula += `<span class="h5">Beneficio</span>: (<strong>Costo</strong>: \$${cashFormat((horaHombre * (horas * dias)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}%) <= (${beneficio!== '' ? beneficio : 0}%)<hr>`;
 
                         formula += `<span class="h5">Costo</span>: \$${cashFormat((horaHombre * (horas * dias)) + gastosExtras)} + <span class="h5">Beneficio</span>: \$${cashFormat(((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio)}`;
 
                         total = ((horaHombre * (horas * dias)) + gastosExtras) + ((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio;
-                    }    
+                    }
+
                     break;
                 case 'semanas':
-                    if(!validarData(horas)) {
+                    if(!validarData(horas)) 
+                    {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
                     }
 
-                    if(!validarData(dias)) {
+                    if(!validarData(dias)) 
+                    {
                         error.push('Error, ingrese los días trabajados');
                     } 
 
-                    if(!validarData(semanas)) {
+                    if(!validarData(semanas)) 
+                    {
                         error.push('Error, ingrese la cantidad de semanas trabajadas');
                     }
 
-                    if(error.length === 0) {
+                    if(error.length === 0) 
+                    {
                         formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * ((<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias}) * <strong>Semanas</strong>: ${semanas})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`;
 
-                        formula += `<span class="h5">Beneficio</span>: <strong>Costo</strong>: \$${cashFormat((horaHombre * (horas * dias * semanas)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)<hr>`;
+                        formula += `<span class="h5">Beneficio</span>: (<strong>Costo</strong>: \$${cashFormat((horaHombre * (horas * dias * semanas)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}%) <= (${beneficio!== '' ? beneficio : 0}%)<hr>`;
 
                         formula += `<span class="h5">Costo</span>: \$${cashFormat((horaHombre * (horas * dias * semanas)) + gastosExtras)} + <span class="h5">Beneficio</span>: \$${cashFormat(((horaHombre * (horas * dias * semanas)) + gastosExtras) * porcentajeBeneficio)}`; 
 
                         total = ((horaHombre * (horas * dias * semanas)) + gastosExtras) + ((horaHombre * (horas * dias * semanas)) + gastosExtras) * porcentajeBeneficio;
                     }
+
                     break;
                 case 'meses':
-                    if(!validarData(horas)) {
+                    if(!validarData(horas)) 
+                    {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
                     }
 
-                    if(!validarData(dias)) {
+                    if(!validarData(dias)) 
+                    {
                         error.push('Error, ingrese los días trabajados');
                     } 
                     
-                    if(!validarData(semanas)) {
+                    if(!validarData(semanas)) 
+                    {
                         error.push('Error, ingrese la cantidad de semanas trabajadas');
                     }
 
-                    if(!validarData(meses)) {
+                    if(!validarData(meses)) 
+                    {
                         error.push('Error, ingrese los meses trabajados');
                     }
 
-                    if(error.length === 0) {                        
+                    if(error.length === 0) 
+                    {                 
                         formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * (((<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias}) * <strong>Semanas</strong>: ${semanas}) * <strong>Meses</strong>: ${meses})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`
                         
-                        formula += `<span class="h5">Beneficio</span>: <strong>Costo</strong>: \$${cashFormat((horaHombre * (horas * dias * semanas * meses)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}% = (${beneficio!== '' ? beneficio : '0'}%)<hr>`;
+                        formula += `<span class="h5">Beneficio</span>: (<strong>Costo</strong>: \$${cashFormat((horaHombre * (horas * dias * semanas * meses)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}%) <= (${beneficio!== '' ? beneficio : 0}%)<hr>`;
                         
                         formula += `<span class="h5">Costo</span>: \$${cashFormat((horaHombre * (horas * dias * semanas * meses)) + gastosExtras)} + <span class="h5">Beneficio</span>: \$${cashFormat(((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) * porcentajeBeneficio)}`;
 
                         total = ((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) + ((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) * porcentajeBeneficio;
                     }
+
                     break;
                 default:
-                    error.push('Error, al configurar el tipo de la cantidad de trabajo');
+                    error.push('Error, al configurar el tipo de rango asociado al tiempo!!');
             }        
 
             if(!isNaN(total) && error.length === 0) {
                 // Método(formula Math) utilizado
-                metodo.innerHTML = '<span class=" h4 font-weight-bold mb-2">Cálculos realizados:</span><hr>' + formula;
+                metodo.innerHTML = '<span class=" h4 font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados:</span><hr>' + formula;
                 resultado.className += ' h2';
-                resultado.innerHTML = `Total: \$${cashFormat(total)}`;
+                resultado.innerHTML = `Total: \$${cashFormat(total)} <i class="fas fa-money-bill-wave"></i>`;
                 window.location.hash = '#resultado'; // <-- Focus
             } else {
                 metodo.innerHTML = '';
@@ -335,6 +376,7 @@
                     </div>`;
                     fadeOutMessage(resultado);
                 });
+
                 error = [];
             }
         }
