@@ -68,12 +68,12 @@
     }
 
     /**
-     * Validar campo númerico para operaciones internas
+     * Validate number field for internal operations
      * ---
      * @param Int data 
      * @return Boolean
      */
-    const validarData = data => {
+    const isValidNumber = data => {
         if(!isNaN(data) && data !== '' && data !== undefined && data !== null && data > 0) return true;
 
         return false;
@@ -211,7 +211,7 @@
                             tipo = 'meses';
                             break;
                         default:
-                            error.push('Seleccione un campo!!');
+                            error.push('Seleccione un campo de tiempo!!');
                     }
                 }       
             }
@@ -229,14 +229,14 @@
             let beneficio = e.target.txtBeneficio.value.trim();
 
             // Validaciones globales
-            if(!validarData(horaHombre)) 
+            if(!isValidNumber(horaHombre)) 
             {
                 error.push('Error, ingrese el valor por hora');
             }
 
             if(gastosExtras) 
             {
-                if(!validarData(gastosExtras)) {
+                if(!isValidNumber(gastosExtras)) {
                     error.push('Error, ingrese valor válido de gastos extras');
                 }
             }
@@ -260,7 +260,7 @@
             switch (tipo) {
                 case 'horas':
 
-                    if(!validarData(horas)) 
+                    if(!isValidNumber(horas)) 
                     {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
                     }
@@ -279,12 +279,12 @@
                     break;
                 case 'días':
 
-                    if(!validarData(horas)) 
+                    if(!isValidNumber(horas)) 
                     {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
                     }
 
-                    if(!validarData(dias)) 
+                    if(!isValidNumber(dias)) 
                     {
                         error.push('Error, ingrese los días trabajados');
                     } 
@@ -303,17 +303,17 @@
                     break;
                 case 'semanas':
 
-                    if(!validarData(horas)) 
+                    if(!isValidNumber(horas)) 
                     {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
                     }
 
-                    if(!validarData(dias)) 
+                    if(!isValidNumber(dias)) 
                     {
                         error.push('Error, ingrese los días trabajados');
                     } 
 
-                    if(!validarData(semanas)) 
+                    if(!isValidNumber(semanas)) 
                     {
                         error.push('Error, ingrese la cantidad de semanas trabajadas');
                     }
@@ -332,22 +332,22 @@
                     break;
                 case 'meses':
 
-                    if(!validarData(horas)) 
+                    if(!isValidNumber(horas)) 
                     {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
                     }
 
-                    if(!validarData(dias)) 
+                    if(!isValidNumber(dias)) 
                     {
                         error.push('Error, ingrese los días trabajados');
                     } 
                     
-                    if(!validarData(semanas)) 
+                    if(!isValidNumber(semanas)) 
                     {
                         error.push('Error, ingrese la cantidad de semanas trabajadas');
                     }
 
-                    if(!validarData(meses)) 
+                    if(!isValidNumber(meses)) 
                     {
                         error.push('Error, ingrese los meses trabajados');
                     }
