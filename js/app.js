@@ -8,6 +8,38 @@
     let total = 0;
     let error = [];
 
+    // Form Inputs
+    const rbtnTipoCantidad = document.querySelectorAll('[name=rbtnTipoCantidad]');
+
+    const labelHoras = document.getElementById('labelHoras');
+    const horas = document.getElementById('txtHoras');
+    const contenedor_horas = document.getElementById('contenedor-horas');
+    
+    const labelDias = document.getElementById('labelDias');
+    const dias = document.getElementById('txtDias');
+    const contenedor_dias = document.getElementById('contenedor-dias');
+    
+    const labelSemanas = document.getElementById('labelSemanas');
+    const semanas = document.getElementById('txtSemanas');
+    const contenedor_semanas = document.getElementById('contenedor-semanas');
+    
+    const labelMeses = document.getElementById('labelMeses');
+    const meses = document.getElementById('txtMeses');
+    const contenedor_meses = document.getElementById('contenedor-meses');
+
+    if(labelHoras) labelHoras.hidden = true;
+    if(contenedor_horas) contenedor_horas.hidden = true;
+    
+    if(labelDias) labelDias.hidden = true;
+    if(contenedor_dias) contenedor_dias.hidden = true;
+    
+    if(labelSemanas) labelSemanas.hidden = true;
+    if(contenedor_semanas) contenedor_semanas.hidden = true; 
+    
+    if(labelMeses) labelMeses.hidden = true;       
+    if(meses) meses.onkeyup = () => semanas.value = Number(meses.value) * 4;
+    if(contenedor_meses) contenedor_meses.hidden = true;
+
     /**
      * Number.prototype.cashFormat(n, x, s, c)
      * ---
@@ -57,65 +89,25 @@
         setTimeout(() => {
             node.style.opacity = 0.5;
             setTimeout(() => {
-                node.style.opacity = 0.2;
+                node.style.opacity = 0.3;
                 setTimeout(() => {
+                    node.style.opacity = 0.1;
                     node.removeAttribute('style');
                     node.innerHTML = '';
                     if(node.querySelector('#error')) node.querySelector('#error').remove();
-                }, 150);
-            }, 150);
-        }, 2700);
+                }, 200);
+            }, 500);
+        }, 2000);
     }
 
-    /**
-     * Cargar valores por defecto del formulario. 
-     * Interacción del usuario con los campos de horas, días, semanas y meses.
-     * ---
-     * @return void
-     */
-    const cargar = () => {
-        const rbtnTipoCantidad = document.querySelectorAll('[name=rbtnTipoCantidad]');
-
-        const labelHoras = document.getElementById('labelHoras');
-        const horas = document.getElementById('txtHoras');
-        const contenedor_horas = document.getElementById('contenedor-horas');
-        
-        const labelDias = document.getElementById('labelDias');
-        const dias = document.getElementById('txtDias');
-        const contenedor_dias = document.getElementById('contenedor-dias');
-        
-        const labelSemanas = document.getElementById('labelSemanas');
-        const semanas = document.getElementById('txtSemanas');
-        const contenedor_semanas = document.getElementById('contenedor-semanas');
-        
-        const labelMeses = document.getElementById('labelMeses');
-        const meses = document.getElementById('txtMeses');
-        const contenedor_meses = document.getElementById('contenedor-meses');
-
-        if(labelHoras) labelHoras.hidden = true;
-        if(contenedor_horas) contenedor_horas.hidden = true;
-        
-        if(labelDias) labelDias.hidden = true;
-        if(contenedor_dias) contenedor_dias.hidden = true;
-        
-        if(labelSemanas) labelSemanas.hidden = true;
-        if(contenedor_semanas) contenedor_semanas.hidden = true; 
-        
-        if(labelMeses) labelMeses.hidden = true;       
-        if(meses) 
-        {
-            // meses.hidden = true;
-            meses.onkeyup = () => {
-                semanas.value = Number(meses.value) * 4;
-            };
-        }
-        if(contenedor_meses) contenedor_meses.hidden = true;
-        
+    if(formulario)
+    {
         for (let i = 0; i < rbtnTipoCantidad.length; i++)
         {  
             rbtnTipoCantidad[i].onchange = () => {
                 if(rbtnTipoCantidad[i].checked === true)
                 {
+                    // Habilitar y deshabilitar inputs
                     switch(rbtnTipoCantidad[i].value) 
                     {
                         case 'Horas':
@@ -123,17 +115,21 @@
                             labelHoras.innerHTML = 'Cantidad de horas';
                             contenedor_horas.hidden = false;
                             contenedor_horas.className = 'col-md-12';
-                            horas.hidden = false;
                             horas.placeholder = 'Ingrese cantidad de horas';
+                            horas.required = true;
 
                             labelDias.hidden = true;                            
                             contenedor_dias.hidden = true;
-
+                            dias.required = false;
+                            
                             labelSemanas.hidden = true;
                             contenedor_semanas.hidden = true;
-
+                            semanas.required = false;
+                            
                             labelMeses.hidden = true;
                             contenedor_meses.hidden = true;
+                            meses.required = false;
+
                             tipo = 'horas';
                             break;
                         case 'Dias':
@@ -141,19 +137,23 @@
                             labelHoras.innerHTML = 'Cantidad de horas <span class="font-weight-bold">por día</span>';
                             contenedor_horas.hidden = false;
                             contenedor_horas.className = 'col-md-6';
-                            horas.hidden = false;
                             horas.placeholder = 'Ingrese cantidad de horas por día';
+                            horas.required = true;
 
                             labelDias.hidden = false;
                             labelDias.innerHTML = 'Cantidad de días';
                             contenedor_dias.hidden = false;
                             dias.placeholder = 'Ingrese cantidad de días';
+                            dias.required = true;
 
                             labelSemanas.hidden = true;
                             contenedor_semanas.hidden = true;
+                            semanas.required = false;
 
                             labelMeses.hidden = true;
                             contenedor_meses.hidden = true;
+                            meses.required = false;
+
                             tipo = 'días';
                             break;
                         case 'Semanas':
@@ -162,21 +162,25 @@
                             contenedor_horas.hidden = false;
                             contenedor_horas.className = 'col-md-6';
                             horas.placeholder = 'Ingrese cantidad de horas por día';
+                            horas.required = true;
 
                             labelDias.hidden = false;
                             labelDias.innerHTML = 'Cantidad de días <span class="font-weight-bold">por semana</span>';
                             contenedor_dias.hidden = false;
                             dias.placeholder = 'Ingrese cantidad de días por semana';
-
+                            dias.required = true;
 
                             labelSemanas.hidden = false;
                             labelSemanas.innerHTML = 'Cantidad de semanas';
                             contenedor_semanas.hidden = false;
                             contenedor_semanas.className = 'col-md-12';
                             semanas.placeholder = 'Ingrese cantidad de semanas';
+                            semanas.required = true
 
                             labelMeses.hidden = true;
                             contenedor_meses.hidden = true;
+                            meses.required = false;
+
                             tipo = 'semanas';
                             break;
                         case 'Meses':
@@ -185,20 +189,25 @@
                             contenedor_horas.hidden = false;
                             contenedor_horas.className = 'col-md-6';
                             horas.placeholder = 'Ingrese cantidad de horas por día';
+                            horas.required = true;
 
                             labelDias.hidden = false;
                             labelDias.innerHTML = 'Cantidad de días <span class="font-weight-bold">por semana</span>';
                             contenedor_dias.hidden = false;
                             dias.placeholder = 'Ingrese cantidad de días por semana';
+                            dias.required = true;
 
                             labelSemanas.hidden = false;
                             labelSemanas.innerHTML = 'Cantidad de semanas <span class="font-weight-bold">por mes</span>';
                             contenedor_semanas.hidden = false;
                             contenedor_semanas.className = 'col-md-6';
                             semanas.placeholder = 'Ingrese cantidad de semanas por mes';
+                            semanas.required = true;
 
                             labelMeses.hidden = false;
                             contenedor_meses.hidden = false;
+                            meses.required = true;
+
                             tipo = 'meses';
                             break;
                         default:
@@ -206,24 +215,18 @@
                     }
                 }       
             }
-        }    
-    }
-
-    if(formulario)
-    {
-        // Se cargan los valores por defecto e interacciones previa del usuario
-        cargar();
+        }
 
         formulario.onsubmit = (e) => {
             e.preventDefault();
             
-            const horaHombre = comeBackCash(document.getElementById('txtHoraHombre').value.trim());
-            const meses = Number(document.getElementById('txtMeses').value.trim());            
-            const semanas = Number(document.getElementById('txtSemanas').value.trim());
-            const dias = Number(document.getElementById('txtDias').value.trim());
-            const horas = Number(document.getElementById('txtHoras').value.trim());
-            const gastosExtras = comeBackCash(document.getElementById('txtGastosExtras').value.trim());
-            let beneficio = document.getElementById('txtBeneficio').value.trim();
+            const horaHombre = comeBackCash(e.target.txtHoraHombre.value.trim());
+            const meses = Number(e.target.txtMeses.value.trim());            
+            const semanas = Number(e.target.txtSemanas.value.trim());
+            const dias = Number(e.target.txtDias.value.trim());
+            const horas = Number(e.target.txtHoras.value.trim());
+            const gastosExtras = comeBackCash(e.target.txtGastosExtras.value.trim());
+            let beneficio = e.target.txtBeneficio.value.trim();
 
             // Validaciones globales
             if(!validarData(horaHombre)) 
@@ -238,10 +241,12 @@
                 }
             }
 
-            // Clean \%
-            if(/\%/g.test(beneficio)) 
+            // Regular expression to replace \%
+            const regExPercentSign = /\%/g;
+
+            if(regExPercentSign.test(beneficio)) 
             {
-                beneficio = beneficio.replace(/\%/g, '');
+                beneficio = beneficio.replace(regExPercentSign, '');
             }
 
             if(isNaN(beneficio)) 
@@ -251,9 +256,10 @@
             
             const porcentajeBeneficio = (Number(beneficio) / 100).toFixed(2) || 0.0;
 
-            // Tipo de interación a calcular
+            // Tipo de interacción a calcular
             switch (tipo) {
                 case 'horas':
+
                     if(!validarData(horas)) 
                     {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
@@ -272,6 +278,7 @@
 
                     break;
                 case 'días':
+
                     if(!validarData(horas)) 
                     {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
@@ -295,6 +302,7 @@
 
                     break;
                 case 'semanas':
+
                     if(!validarData(horas)) 
                     {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
@@ -323,6 +331,7 @@
 
                     break;
                 case 'meses':
+
                     if(!validarData(horas)) 
                     {
                         error.push('Error, ingrese la cantidad de horas trabajadas');
@@ -356,11 +365,12 @@
 
                     break;
                 default:
-                    error.push('Error, al configurar el tipo de rango asociado al tiempo!!');
+                    error.push('Error, con la interacción de tiempo para realizar cálculos!!');
             }        
 
-            if(!isNaN(total) && error.length === 0) {
-                // Método(formula Math) utilizado
+            if(!isNaN(total) && error.length === 0) 
+            {
+                // Método(formula Math) que se usó
                 metodo.innerHTML = '<span class=" h4 font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados:</span><hr>' + formula;
                 resultado.className += ' h2';
                 resultado.innerHTML = `Total: \$${cashFormat(total)} <i class="fas fa-money-bill-wave"></i>`;
@@ -374,6 +384,7 @@
                     resultado.innerHTML += `<div id="error" class="alert alert-dismissible alert-danger">
                         <p class="mb-0">${data}</p>
                     </div>`;
+                    
                     fadeOutMessage(resultado);
                 });
 
@@ -384,3 +395,5 @@
 })();
 
 // TODO: Refactor the code, to make it more readable and scalable.
+// TODO: Min data inside of the file JS
+// TODO: Combine how much to charge per hour and how much to charge per project in a single project.
