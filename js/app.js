@@ -63,29 +63,19 @@
      * @param String str
      * @return Int 
      */
-    const comeBackCash = (str) => {
+    const comeBackCash = str => {
         return Number(str.replace(/\./g, '').replace(/\,/g, ''));
     }
 
-    /**
-     * Validate number field for internal operations
-     * ---
-     * @param Int data 
-     * @return Boolean
-     */
-    const isValidNumber = data => {
-        if(!isNaN(data) && data !== '' && data !== undefined && data !== null && data > 0) return true;
-
-        return false;
-    }
-
+    
     /**
      * Transition effect for errors
      * ---
      * @param NodeHTML node
+     * @param String index <-- querySelector
      * @return void
      */
-    const fadeOutMessage = node => {
+    const fadeOutMessage = (node) => {
         setTimeout(() => {
             node.style.opacity = 0.5;
             setTimeout(() => {
@@ -94,10 +84,53 @@
                     node.style.opacity = 0.1;
                     node.removeAttribute('style');
                     node.innerHTML = '';
-                    if(node.querySelector('#error')) node.querySelector('#error').remove();
+                    node.remove();
+                    console.log(node);
                 }, 200);
             }, 500);
-        }, 2000);
+        }, 3000);
+    }
+
+    /**
+     * Validate number field for internal operations
+     * ---
+     * @param String message
+     * @param Int data 
+     * @return Boolean
+     */
+    const isValidNumber = (message, data) => {
+        if(isNaN(data)) error.push(`${message} debe ser un valor númerico`);
+        if(data == '') error.push(`${message} debe ser diferente de vacío`);
+        if(data == undefined) error.push(`${message} debe ser diferente de undefined`);
+        if(data == null) error.push(`${message} debe ser diferente de null`);
+        if(data <= 0) error.push(`${message} debe ser mayor a cero`);
+    }
+    
+    /**
+     * Print errors
+     * ---
+     * @return void
+     */
+    const areThereMistakes = () => {
+        if(error.length != 0)
+        {
+            error.map((data, index) => {
+                resultado.innerHTML += `<div id="error-${index}" class="alert alert-dismissible alert-danger">
+                    <p class="mb-0">${data}</p>
+                </div>`;
+            });
+
+            for (let index = error.length - 1; index >= 0; index--)
+            {   
+                console.log(index);
+                console.log(error[index])
+                console.log(index * 1000)
+
+                setTimeout(() => {
+                    fadeOutMessage(resultado.querySelector(`#error-${index}`));
+                }, index * 1000);
+            }
+        }
     }
 
     if(formulario)
@@ -229,17 +262,9 @@
             let beneficio = e.target.txtBeneficio.value.trim();
 
             // Validaciones globales
-            if(!isValidNumber(horaHombre)) 
-            {
-                error.push('Error, ingrese el valor por hora');
-            }
+            isValidNumber('Valor por hora', horaHombre);
 
-            if(gastosExtras) 
-            {
-                if(!isValidNumber(gastosExtras)) {
-                    error.push('Error, ingrese valor válido de gastos extras');
-                }
-            }
+            if(gastosExtras) isValidNumber('Gastos extras', gastosExtras);
 
             // Regular expression to replace \%
             const regExPercentSign = /\%/g;
@@ -249,10 +274,10 @@
                 beneficio = beneficio.replace(regExPercentSign, '');
             }
 
-            if(isNaN(beneficio)) 
-            {
-                error.push('Error, ingrese el porcentaje de beneficios como dato númerico o decimal(0.00)');
-            }
+            if(isNaN(beneficio)) error.push('Porcentaje de beneficio debe ser númerico o décimal => 0.0');
+
+            // Are there mistakes¿?
+            areThereMistakes();
             
             const porcentajeBeneficio = (Number(beneficio) / 100).toFixed(2) || 0.0;
 
@@ -260,11 +285,8 @@
             switch (tipo) {
                 case 'horas':
 
-                    if(!isValidNumber(horas)) 
-                    {
-                        error.push('Error, ingrese la cantidad de horas trabajadas');
-                    }
-                    
+                    isValidNumber('La cantidad de horas', horas);
+
                     if(error.length === 0) 
                     {
                         formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`; 
@@ -279,15 +301,8 @@
                     break;
                 case 'días':
 
-                    if(!isValidNumber(horas)) 
-                    {
-                        error.push('Error, ingrese la cantidad de horas trabajadas');
-                    }
-
-                    if(!isValidNumber(dias)) 
-                    {
-                        error.push('Error, ingrese los días trabajados');
-                    } 
+                    isValidNumber('La cantidad de horas', horas);
+                    isValidNumber('La cantidad días', dias);
 
                     if(error.length === 0) 
                     {
@@ -302,21 +317,9 @@
 
                     break;
                 case 'semanas':
-
-                    if(!isValidNumber(horas)) 
-                    {
-                        error.push('Error, ingrese la cantidad de horas trabajadas');
-                    }
-
-                    if(!isValidNumber(dias)) 
-                    {
-                        error.push('Error, ingrese los días trabajados');
-                    } 
-
-                    if(!isValidNumber(semanas)) 
-                    {
-                        error.push('Error, ingrese la cantidad de semanas trabajadas');
-                    }
+                    isValidNumber('La cantidad de horas', horas);
+                    isValidNumber('La cantidad días', dias);
+                    isValidNumber('La cantidad de semanas', semanas);
 
                     if(error.length === 0) 
                     {
@@ -332,25 +335,10 @@
                     break;
                 case 'meses':
 
-                    if(!isValidNumber(horas)) 
-                    {
-                        error.push('Error, ingrese la cantidad de horas trabajadas');
-                    }
-
-                    if(!isValidNumber(dias)) 
-                    {
-                        error.push('Error, ingrese los días trabajados');
-                    } 
-                    
-                    if(!isValidNumber(semanas)) 
-                    {
-                        error.push('Error, ingrese la cantidad de semanas trabajadas');
-                    }
-
-                    if(!isValidNumber(meses)) 
-                    {
-                        error.push('Error, ingrese los meses trabajados');
-                    }
+                    isValidNumber('La cantidad de horas', horas);
+                    isValidNumber('La cantidad días', dias);
+                    isValidNumber('La cantidad de semanas', semanas);
+                    isValidNumber('La cantidad de meses', meses);
 
                     if(error.length === 0) 
                     {                 
@@ -374,19 +362,13 @@
                 metodo.innerHTML = '<span class=" h4 font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados:</span><hr>' + formula;
                 resultado.className += ' h2';
                 resultado.innerHTML = `Total: \$${cashFormat(total)} <i class="fas fa-money-bill-wave"></i>`;
-                window.location.hash = '#resultado'; // <-- Focus
+                // window.location.hash = '#resultado'; // <-- Focus
             } else {
                 metodo.innerHTML = '';
                 resultado.classList.remove('h2');
                 resultado.innerHTML = '';
 
-                error.map(data => {
-                    resultado.innerHTML += `<div id="error" class="alert alert-dismissible alert-danger">
-                        <p class="mb-0">${data}</p>
-                    </div>`;
-                    
-                    fadeOutMessage(resultado);
-                });
+                areThereMistakes();
 
                 error = [];
             }
@@ -394,6 +376,5 @@
     }    
 })();
 
-// TODO: Refactor the code, to make it more readable and scalable.
 // TODO: Min data inside of the file JS
 // TODO: Combine how much to charge per hour and how much to charge per project in a single project.
