@@ -114,22 +114,19 @@
     const areThereMistakes = () => {
         if(error.length != 0)
         {
+            let flag = error.length - 1;
+
             error.map((data, index) => {
                 resultado.innerHTML += `<div id="error-${index}" class="alert alert-dismissible alert-danger">
                     <p class="mb-0">${data}</p>
                 </div>`;
-            });
-
-            for (let index = error.length - 1; index >= 0; index--)
-            {   
-                console.log(index);
-                console.log(error[index])
-                console.log(index * 1000)
 
                 setTimeout(() => {
                     fadeOutMessage(resultado.querySelector(`#error-${index}`));
-                }, index * 1000);
-            }
+                }, flag * 1000);
+
+                flag--;
+            });
         }
     }
 
