@@ -6,7 +6,7 @@
     let formula = '';
     let tipo = ''; 
     let total = 0;
-    let error = [];
+    let mistakes = [];
 
     // Form Inputs
     const rbtnTipoCantidad = document.querySelectorAll('[name=rbtnTipoCantidad]');
@@ -67,7 +67,6 @@
         return Number(str.replace(/\./g, '').replace(/\,/g, ''));
     }
 
-    
     /**
      * Transition effect for errors
      * ---
@@ -85,7 +84,6 @@
                     node.removeAttribute('style');
                     node.innerHTML = '';
                     node.remove();
-                    console.log(node);
                 }, 200);
             }, 500);
         }, 3000);
@@ -99,30 +97,31 @@
      * @return Boolean
      */
     const isValidNumber = (message, data) => {
-        if(isNaN(data)) error.push(`${message} debe ser un valor númerico`);
-        if(data == '') error.push(`${message} debe ser diferente de vacío`);
-        if(data == undefined) error.push(`${message} debe ser diferente de undefined`);
-        if(data == null) error.push(`${message} debe ser diferente de null`);
-        if(data <= 0) error.push(`${message} debe ser mayor a cero`);
+        if(isNaN(data)) mistakes.push(`${message} debe ser un valor númerico`);
+        if(data == '') mistakes.push(`${message} debe ser diferente de vacío`);
+        if(data == undefined) mistakes.push(`${message} debe ser diferente de undefined`);
+        if(data == null) mistakes.push(`${message} debe ser diferente de null`);
+        if(data <= 0) mistakes.push(`${message} debe ser mayor a cero`);
     }
     
     /**
      * Print errors
      * ---
+     * @param NodeHTML node
      * @return void
      */
-    const areThereMistakes = () => {
-        if(error.length != 0)
+    const areThereMistakes = (node) => {
+        if(mistakes.length != 0)
         {
-            let flag = error.length - 1;
+            let flag = mistakes.length - 1;
 
-            error.map((data, index) => {
-                resultado.innerHTML += `<div id="error-${index}" class="alert alert-dismissible alert-danger">
+            mistakes.map((data, index) => {
+                node.innerHTML += `<div id="error-${index}" class="alert alert-dismissible alert-danger">
                     <p class="mb-0">${data}</p>
                 </div>`;
 
                 setTimeout(() => {
-                    fadeOutMessage(resultado.querySelector(`#error-${index}`));
+                    fadeOutMessage(node.querySelector(`#error-${index}`));
                 }, flag * 1000);
 
                 flag--;
@@ -241,7 +240,7 @@
                             tipo = 'meses';
                             break;
                         default:
-                            error.push('Seleccione un campo de tiempo!!');
+                            mistakes.push('Seleccione un campo de tiempo!!');
                     }
                 }       
             }
@@ -271,10 +270,7 @@
                 beneficio = beneficio.replace(regExPercentSign, '');
             }
 
-            if(isNaN(beneficio)) error.push('Porcentaje de beneficio debe ser númerico o décimal => 0.0');
-
-            // Are there mistakes¿?
-            areThereMistakes();
+            if(isNaN(beneficio)) mistakes.push('Porcentaje de beneficio debe ser númerico o décimal => 0.0');
             
             const porcentajeBeneficio = (Number(beneficio) / 100).toFixed(2) || 0.0;
 
@@ -284,7 +280,7 @@
 
                     isValidNumber('La cantidad de horas', horas);
 
-                    if(error.length === 0) 
+                    if(mistakes.length === 0) 
                     {
                         formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * <strong>Cantidad de Horas</strong>: ${horas}) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`; 
 
@@ -301,7 +297,7 @@
                     isValidNumber('La cantidad de horas', horas);
                     isValidNumber('La cantidad días', dias);
 
-                    if(error.length === 0) 
+                    if(mistakes.length === 0) 
                     {
                         formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * (<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`;
 
@@ -318,7 +314,7 @@
                     isValidNumber('La cantidad días', dias);
                     isValidNumber('La cantidad de semanas', semanas);
 
-                    if(error.length === 0) 
+                    if(mistakes.length === 0) 
                     {
                         formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * ((<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias}) * <strong>Semanas</strong>: ${semanas})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`;
 
@@ -337,7 +333,7 @@
                     isValidNumber('La cantidad de semanas', semanas);
                     isValidNumber('La cantidad de meses', meses);
 
-                    if(error.length === 0) 
+                    if(mistakes.length === 0) 
                     {                 
                         formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${cashFormat(horaHombre)} * (((<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias}) * <strong>Semanas</strong>: ${semanas}) * <strong>Meses</strong>: ${meses})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`
                         
@@ -350,13 +346,13 @@
 
                     break;
                 default:
-                    error.push('Error, con la interacción de tiempo para realizar cálculos!!');
+                    mistakes.push('Error, con la interacción de tiempo para realizar cálculos!!');
             }        
 
-            if(!isNaN(total) && error.length === 0) 
+            if(mistakes.length == 0) 
             {
                 // Método(formula Math) que se usó
-                metodo.innerHTML = '<span class=" h4 font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados:</span><hr>' + formula;
+                metodo.innerHTML = '<span class="h4 font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados:</span><hr>' + formula;
                 resultado.className += ' h2';
                 resultado.innerHTML = `Total: \$${cashFormat(total)} <i class="fas fa-money-bill-wave"></i>`;
                 // window.location.hash = '#resultado'; // <-- Focus
@@ -365,13 +361,10 @@
                 resultado.classList.remove('h2');
                 resultado.innerHTML = '';
 
-                areThereMistakes();
+                areThereMistakes(resultado);
 
-                error = [];
+                mistakes = [];
             }
         }
     }    
 })();
-
-// TODO: Min data inside of the file JS
-// TODO: Combine how much to charge per hour and how much to charge per project in a single project.
