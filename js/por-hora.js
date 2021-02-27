@@ -1,98 +1,11 @@
+import {cashFormat, comeBackCash, isValidNumber, messagesError} from './functions.js';
+
 (function() {
     const formulario = document.getElementById('formulario');
     const resultado = document.getElementById('resultado');
     const metodo = document.getElementById('metodo');
     let formula = '';
-    let mistakes = [];
-
-    /**
-     * Number.prototype.cashFormat(n, x, s, c)
-     * ---
-     * @param integer data: <- amount
-     * @param integer n: length of decimal
-     * @param integer x: length of whole part
-     * @param mixed s: sections delimiter
-     * @param mixed c: decimal delimiter
-     * @origen https://stackoverflow.com/questions/149055/how-to-format-numbers-as-currency-string
-     * @return String
-     * */
-    // Number.prototype.cashFormat = function(n = 0, x = 3, s = '.', c = ',') {
-    const cashFormat = (data, n = 0, x = 3, s = '.', c = ',') => {
-        const re = '\\d(?=(\\d{' + x + '})+' + (n > 0 ? '\\D' : '$') + ')', num = data.toFixed(Math.max(0, ~~n));
-        return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
-    };
-
-    /**
-     * Come back cash to origin numeric
-     * ---
-     * @param String str
-     * @return Int 
-     */
-    const comeBackCash = str => {
-        return Number(str.replace(/\./g, '').replace(/\,/g, ''));
-    }
-
-    /**
-     * Validate number field for internal operations
-     * ---
-     * @param String message
-     * @param Int data 
-     * @return Boolean
-     */
-    const isValidNumber = (message, data) => {
-        if(isNaN(data)) mistakes.push(`${message} debe ser un valor númerico`);
-        if(data == '') mistakes.push(`${message} debe ser diferente de vacío`);
-        if(data == undefined) mistakes.push(`${message} debe ser diferente de undefined`);
-        if(data == null) mistakes.push(`${message} debe ser diferente de null`);
-        if(data <= 0) mistakes.push(`${message} debe ser mayor a cero`);
-    }
-
-    /**
-     * Transition effect for errors
-     * ---
-     * @param NodeHTML node
-     * @param String index <-- querySelector
-     * @return void
-     */
-    const fadeOutMessage = (node) => {
-        setTimeout(() => {
-            node.style.opacity = 0.5;
-            setTimeout(() => {
-                node.style.opacity = 0.3;
-                setTimeout(() => {
-                    node.style.opacity = 0.1;
-                    node.removeAttribute('style');
-                    node.innerHTML = '';
-                    node.remove();
-                }, 200);
-            }, 500);
-        }, 3000);
-    }
-
-    /**
-     * Print errors
-     * ---
-     * @param NodeHTML node
-     * @return void
-     */
-    const areThereMistakes = (node) => {
-        if(mistakes.length != 0)
-        {
-            let flag = mistakes.length - 1;
-
-            mistakes.map((data, index) => {
-                node.innerHTML += `<div id="error-${index}" class="alert alert-dismissible alert-danger">
-                    <p class="mb-0">${data}</p>
-                </div>`;
-
-                setTimeout(() => {
-                    fadeOutMessage(node.querySelector(`#error-${index}`));
-                }, flag * 1000);
-
-                flag--;
-            });
-        }
-    }
+    let errors = [];    
 
     if(formulario) 
     {
@@ -110,13 +23,13 @@
             // ===========================================================
             // Validar datos de entrada 
             // ===========================================================            
-            isValidNumber('El salario', salario);
-            isValidNumber('La cantidad de horas', cantHoras);
-            isValidNumber('La cantidad de días', cantDias);
+            isValidNumber('El salario', salario, errors);
+            isValidNumber('La cantidad de horas', cantHoras, errors);
+            isValidNumber('La cantidad de días', cantDias, errors);
 
-            if(vacaciones) isValidNumber('Las cantidad de días de vacaciones', vacaciones);
-            if(feriados) isValidNumber('La cantidad de días feríados', feriados);
-            if(gastosExtras) isValidNumber('Gastos extras', gastosExtras);
+            if(vacaciones) isValidNumber('Las cantidad de días de vacaciones', vacaciones, errors);
+            if(feriados) isValidNumber('La cantidad de días feríados', feriados, errors);
+            if(gastosExtras) isValidNumber('Gastos extras', gastosExtras, errors);
 
             // Regular expression to replace \%
             const regExPercentSign = /\%/g;
@@ -126,7 +39,7 @@
                 beneficio = beneficio.replace(regExPercentSign, '');
             }
 
-            if(isNaN(beneficio)) mistakes.push('Porcentaje de beneficio debe ser númerico o décimal => 0.0');
+            if(isNaN(beneficio)) errors.push('Porcentaje de beneficio debe ser númerico o décimal => 0.0');
 
             // ===========================================================
             // Calcular ¿Cuánto cobrar por hora?
@@ -162,7 +75,7 @@
             // Total
             const valorPorHoraTrabajo = Math.ceil((valorBaseHora + (valorBaseHora * rentabilidad)) + (valorBaseHora * porcentajeBeneficio));
 
-            if(mistakes.length == 0) 
+            if(errors.length == 0) 
             {
                 formula = `<strong>Sueldo bruto anual</strong>: (\$${cashFormat(salario)} * 12 meses) = \$${cashFormat(sueldoAnual)}<hr>`;
                 formula += `<strong>Cantidad de horas a trabajar anualmente</strong>: (${cantHoras} * ${cantDias} * 52 semanas) = ${cashFormat(totalHoras)}hrs<hr>`;
@@ -184,9 +97,9 @@
                 resultado.classList.remove('h2');
                 resultado.innerHTML = '';
             
-                areThereMistakes(resultado);
+                messagesError(errors, resultado);
 
-                mistakes = [];
+                errors = [];
             }
         } 
     }
