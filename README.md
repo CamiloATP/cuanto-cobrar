@@ -1,4 +1,5 @@
-# Calcular precio por trabajo o proyecto #
+# ¿Cuánto cobrar por proyecto? #
+## Trabajo ##
 ### "A realizar, terminar y/o cobrar" ###
 #### ¿Freelancer? ####
 
