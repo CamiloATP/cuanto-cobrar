@@ -1,9 +1,9 @@
-# ¿Cuánto cobrar por proyecto? #
-## Trabajo ##
-### "A realizar, terminar y/o cobrar" ###
+# ¿Cuánto cobrar por proyecto? | ¿Cuánto cobrar por hora?#
+### A realizar, terminar y/o cobrar" ###
 #### ¿Freelancer? ####
 
 Demo: [¿Cuánto cobrar por proyecto?](https://camiloatp.github.io/cuanto-cobrar/)
+
 Demo2: [¿Cuánto cobrar por hora?](https://camiloatp.github.io/cuanto-cobrar/por-hora.html)
 
 Calcular el valor de tu proyecto o trabajo realizado. En base al valor de tu hora de trabajo, el proyecto se encuentra con el formato de moneda **CLP** - Chile.
