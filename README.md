@@ -1,4 +1,4 @@
-# ¿Cuánto cobrar por proyecto? | ¿Cuánto cobrar por hora?#
+# ¿Cuánto cobrar por proyecto? | ¿Cuánto cobrar por hora? #
 ### A realizar, terminar y/o cobrar" ###
 #### ¿Freelancer? ####
 
