@@ -16,6 +16,18 @@ const cashFormat = (amount, lengthOfDecimal = 0, lengthOfDot = 3, dotDelimiter =
 };
 
 /**
+ * Currencies Format
+ * ---
+ * @param String locale 
+ * @param String currency 
+ * @param Int amount
+ * @return String
+ */
+const currenciesFormat = (locale, currency, amount) => {
+    return Intl.NumberFormat(locale, {style: "currency", currency}).format(amount)
+}
+
+/**
  * Come back cash to origin numeric
  * ---
  * @param String str
@@ -89,7 +101,7 @@ const messagesError = (errors, node) => {
 }
 
 export {
-    cashFormat,
+    currenciesFormat,
     comeBackCash,
     isValidNumber,
     messagesError

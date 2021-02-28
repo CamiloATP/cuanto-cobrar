@@ -24,10 +24,23 @@
         <section class="d-flex flex-wrap justify-content-center">
             <div class="col-md-10 bg-white-transparent pt-3">
                 <form id="formulario">
+                    <p><a href="/" target="_blank"><i class="fas fa-link"></i> Calcular ¿Cuánto cobrar por proyecto?</a></p>
                     <div class="form-group">
-                        <label for="salario">¿Cuánto quiere ganar al mes? - <a href="/" target="_blank"><i class="fas fa-link"></i> Calcular ¿Cuánto cobrar por proyecto?</a></label>
-                        <input id="salario" type="number" class="form-control" placeholder="Ingrese su monto" min="0" required>
-                        <span class="text-help">* El sueldo que quiere mensualmente</span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="salario">¿Cuánto quiere ganar al mes?</label>
+                                <input id="salario" type="number" class="form-control" placeholder="Ingrese su monto" min="0" required>
+                                <span class="text-help">* El sueldo que quiere mensualmente</span>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="">Configuración regional</label>
+                                <select name="ddlLocales" id="ddlLocales" class="form-control"></select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="">Divisas</label>
+                                <select name="ddlCurrencies" id="ddlCurrencies" class="form-control"></select>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">

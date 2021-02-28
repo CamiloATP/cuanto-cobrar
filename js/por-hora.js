@@ -1,11 +1,41 @@
-import {cashFormat, comeBackCash, isValidNumber, messagesError} from './functions.js';
+import {currenciesFormat, comeBackCash, isValidNumber, messagesError} from './functions.js';
+import localesJSON from './locales.js'; // <-- https://raw.githubusercontent.com/umpirsky/locale-list/master/data/en_US/locales.json
+import currenciesJSON from './currencies.js'; // <-- https://raw.githubusercontent.com/umpirsky/currency-list/master/data/en_US/currency.json
 
 (function() {
     const formulario = document.getElementById('formulario');
+    const locales = Object.keys(localesJSON);
+    const currencies = Object.keys(currenciesJSON);
     const resultado = document.getElementById('resultado');
     const metodo = document.getElementById('metodo');
     let formula = '';
-    let errors = [];    
+    let errors = [];
+
+    let ddlLocales = document.getElementById('ddlLocales');
+    
+    for (let i = 0; i < locales.length; i++) 
+    {
+        let opt = document.createElement('option');
+        opt.appendChild(document.createTextNode(locales[i]));
+    
+        if(locales[i] == 'es-CL') opt.selected = true;
+    
+        opt.value = locales[i];
+        ddlLocales.appendChild(opt); 
+    }
+    
+    let ddlCurrencies = document.getElementById('ddlCurrencies');
+    
+    for (let i = 0; i < currencies.length; i++) 
+    {
+        let opt = document.createElement('option');
+        opt.appendChild(document.createTextNode(currencies[i]));
+        
+        if(currencies[i] == 'CLP') opt.selected = true;
+    
+        opt.value = currencies[i];
+        ddlCurrencies.appendChild(opt); 
+    }
 
     if(formulario) 
     {
@@ -18,6 +48,8 @@ import {cashFormat, comeBackCash, isValidNumber, messagesError} from './function
             const vacaciones = Number(e.target.vacaciones.value.trim());
             const feriados = Number(e.target.feriados.value.trim());
             const gastosExtras = Number(comeBackCash(e.target.gastosExtras.value.trim()));
+            const currency = e.target.ddlCurrencies.value;
+            const locale = e.target.ddlLocales.value;
             let beneficio = e.target.beneficio.value.trim();            
 
             // ===========================================================
@@ -77,20 +109,20 @@ import {cashFormat, comeBackCash, isValidNumber, messagesError} from './function
 
             if(errors.length == 0) 
             {
-                formula = `<strong>Sueldo bruto anual</strong>: (\$${cashFormat(salario)} * 12 meses) = \$${cashFormat(sueldoAnual)}<hr>`;
-                formula += `<strong>Cantidad de horas a trabajar anualmente</strong>: (${cantHoras} * ${cantDias} * 52 semanas) = ${cashFormat(totalHoras)}hrs<hr>`;
-                formula += `<strong>Valor base por hora</strong>: (\$${cashFormat(sueldoAnual)} / ${cashFormat(totalHoras)}) = \$${cashFormat(valorBaseHora)}<hr>`;
-                formula += `<strong>Cantidad de las horas libres (Vacaciones y feriados)</strong>: (${vacaciones} * ${cantHoras}) + (${feriados} * ${cantHoras}) = ${cashFormat(horasLibres)}hrs<hr>`;
-                formula += `<strong>Valor de las horas libres (Vacaciones y feriados)</strong>: (${cashFormat(horasLibres)}hrs * \$${cashFormat(valorBaseHora)}) = \$${cashFormat(valorHorasLibres)}<hr>`;
-                formula += `<strong>Gastos extras anual</strong>: (\$${cashFormat(gastosExtras)} * 12 meses) = \$${cashFormat(totalGastosExtras)}<hr>`;
-                formula += `<strong>Beneficio anual</strong>: (${cashFormat(totalHoras)}hrs - ${cashFormat(horasLibres)}hrs) * \$${cashFormat(valorBaseHora)} = \$${cashFormat(beneficioAnual)}<hr>`;
-                formula += `<strong>Valor Extra Anual</strong>: \$${cashFormat(valorHorasLibres)} + \$${cashFormat(totalGastosExtras)} = \$${cashFormat(valorExtraAnual)}<hr>`;
-                formula += `<strong>Porcentaje de Rentabilidad</strong>: (\$${cashFormat(valorExtraAnual)} / \$${cashFormat(beneficioAnual)}) = ${(rentabilidad*100).toFixed(3)}%<hr>`;
-                formula += `<strong>Valor por hora de trabajo</strong>: (\$${cashFormat(valorBaseHora)} + (\$${cashFormat(valorBaseHora)} * ${(rentabilidad*100).toFixed(3)}%) + (\$${cashFormat(valorBaseHora)} * ${porcentajeBeneficio}%)) = \$${cashFormat(valorPorHoraTrabajo)}<hr>`;
+                formula = `<strong>Sueldo bruto anual</strong>: (${currenciesFormat(locale, currency, salario)} * 12 meses) = ${currenciesFormat(locale, currency, sueldoAnual)}<hr>`;
+                formula += `<strong>Cantidad de horas a trabajar anualmente</strong>: (${cantHoras} * ${cantDias} * 52 semanas) = ${totalHoras}hrs<hr>`;
+                formula += `<strong>Valor base por hora</strong>: (${currenciesFormat(locale, currency, sueldoAnual)} / ${currenciesFormat(locale, currency, totalHoras)}) = ${currenciesFormat(locale, currency, valorBaseHora)}<hr>`;
+                formula += `<strong>Cantidad de las horas libres (Vacaciones y feriados)</strong>: (${vacaciones} * ${cantHoras}) + (${feriados} * ${cantHoras}) = ${horasLibres}hrs<hr>`;
+                formula += `<strong>Valor de las horas libres (Vacaciones y feriados)</strong>: (${currenciesFormat(locale, currency, horasLibres)}hrs * ${currenciesFormat(locale, currency, valorBaseHora)}) = ${currenciesFormat(locale, currency, valorHorasLibres)}<hr>`;
+                formula += `<strong>Gastos extras anual</strong>: (${currenciesFormat(locale, currency, gastosExtras)} * 12 meses) = ${currenciesFormat(locale, currency, totalGastosExtras)}<hr>`;
+                formula += `<strong>Beneficio anual</strong>: (${currenciesFormat(locale, currency, totalHoras)}hrs - ${currenciesFormat(locale, currency, horasLibres)}hrs) * ${currenciesFormat(locale, currency, valorBaseHora)} = ${currenciesFormat(locale, currency, beneficioAnual)}<hr>`;
+                formula += `<strong>Valor Extra Anual</strong>: ${currenciesFormat(locale, currency, valorHorasLibres)} + ${currenciesFormat(locale, currency, totalGastosExtras)} = ${currenciesFormat(locale, currency, valorExtraAnual)}<hr>`;
+                formula += `<strong>Porcentaje de Rentabilidad</strong>: (${currenciesFormat(locale, currency, valorExtraAnual)} / ${currenciesFormat(locale, currency, beneficioAnual)}) = ${(rentabilidad*100).toFixed(3)}%<hr>`;
+                formula += `<strong>Valor por hora de trabajo</strong>: (${currenciesFormat(locale, currency, valorBaseHora)} + (${currenciesFormat(locale, currency, valorBaseHora)} * ${(rentabilidad*100).toFixed(3)}%) + (${currenciesFormat(locale, currency, valorBaseHora)} * ${porcentajeBeneficio}%)) = ${currenciesFormat(locale, currency, valorPorHoraTrabajo)}<hr>`;
     
                 metodo.innerHTML = '<span class="h4 font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados: </span><hr>' + formula;
                 resultado.className += ' h2';
-                resultado.innerHTML = `<span class="h4 font-weight-bold mb-2">Total: \$${cashFormat(valorPorHoraTrabajo)} <i class="fas fa-money-bill-wave"></i></span>`;
+                resultado.innerHTML = `<span class="h4 font-weight-bold mb-2">Total: ${currenciesFormat(locale, currency, valorPorHoraTrabajo)} <i class="fas fa-money-bill-wave"></i></span>`;
                 // resultado.focus(); // <-- Focus
             } else {
                 metodo.innerHTML = '';
