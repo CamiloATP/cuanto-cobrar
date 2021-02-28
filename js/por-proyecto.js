@@ -1,6 +1,43 @@
 import {cashFormat, comeBackCash, isValidNumber, messagesError} from './functions.js';
+import localesJSON from './locales.js'; // <-- https://raw.githubusercontent.com/umpirsky/locale-list/master/data/en_US/locales.json
+import currenciesJSON from './currencies.js'; // <-- https://raw.githubusercontent.com/umpirsky/currency-list/master/data/en_US/currency.json
 
 (function() {
+    // Test =============================================================================================
+    const locales = Object.keys(localesJSON);
+    const currencies = Object.keys(currenciesJSON);
+    
+    let ddlLocales = document.getElementById('ddlLocales');
+    
+    for (let i = 0; i < locales.length; i++) 
+    {
+        let opt = document.createElement('option');
+        opt.appendChild(document.createTextNode(locales[i]));
+    
+        if(locales[i] == 'es-CL') opt.selected = true;
+    
+        opt.value = locales[i];
+        ddlLocales.appendChild(opt); 
+    }
+    
+    let ddlCurrencies = document.getElementById('ddlCurrencies');
+    
+    for (let i = 0; i < currencies.length; i++) 
+    {
+        let opt = document.createElement('option');
+        opt.appendChild(document.createTextNode(currencies[i]));
+        
+        if(currencies[i] == 'CLP') opt.selected = true;
+    
+        opt.value = currencies[i];
+        ddlCurrencies.appendChild(opt); 
+    }
+    
+    // const number = 10000000;
+    // alert(Intl.NumberFormat("bs-Cyrl-BA", {style: "currency", currency: "EUR"}).format(number));
+
+    // End Test =======================================================================================
+
     const formulario = document.getElementById('formulario');
     const resultado = document.getElementById('resultado');
     const metodo = document.getElementById('metodo');    
