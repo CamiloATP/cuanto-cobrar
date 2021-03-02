@@ -1,7 +1,6 @@
 import {currenciesFormat, comeBackCash, isValidNumber, messagesError} from './functions.js';
 import localesJSON from './locales.js'; // <-- https://raw.githubusercontent.com/umpirsky/locale-list/master/data/en_US/locales.json
 import currenciesJSON from './currencies.js'; // <-- https://raw.githubusercontent.com/umpirsky/currency-list/master/data/en_US/currency.json
-
 (function() {
     const formulario = document.getElementById('formulario');
     const locales = Object.keys(localesJSON);
@@ -119,10 +118,23 @@ import currenciesJSON from './currencies.js'; // <-- https://raw.githubuserconte
                 formula += `<strong>Valor Extra Anual</strong>: ${currenciesFormat(locale, currency, valorHorasLibres)} + ${currenciesFormat(locale, currency, totalGastosExtras)} = ${currenciesFormat(locale, currency, valorExtraAnual)}<hr>`;
                 formula += `<strong>Porcentaje de Rentabilidad</strong>: (${currenciesFormat(locale, currency, valorExtraAnual)} / ${currenciesFormat(locale, currency, beneficioAnual)}) = ${(rentabilidad*100).toFixed(3)}%<hr>`;
                 formula += `<strong>Valor por hora de trabajo</strong>: (${currenciesFormat(locale, currency, valorBaseHora)} + (${currenciesFormat(locale, currency, valorBaseHora)} * ${(rentabilidad*100).toFixed(3)}%) + (${currenciesFormat(locale, currency, valorBaseHora)} * ${porcentajeBeneficio}%)) = ${currenciesFormat(locale, currency, valorPorHoraTrabajo)}<hr>`;
-    
+
+                
                 metodo.innerHTML = '<span class="h4 font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados: </span><hr>' + formula;
                 resultado.className += ' h2';
                 resultado.innerHTML = `<span class="h4 font-weight-bold mb-2">Total: ${currenciesFormat(locale, currency, valorPorHoraTrabajo)} <i class="fas fa-money-bill-wave"></i></span>`;
+
+                var result = formula += `<span class="h2 font-weight-bold mb-2">Total: ${currenciesFormat(locale, currency, valorPorHoraTrabajo)} <i class="fas fa-money-bill-wave"></i></span>`;
+
+                Swal.fire({
+                    title: '<span class="font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados: </span>',
+                    icon: 'success',
+                    width: '800px',
+                    html: result,
+                    confirmButtonColor: '#28a745',
+                    confirmButtonText: 'Ok!!'
+                });
+
                 // resultado.focus(); // <-- Focus
             } else {
                 metodo.innerHTML = '';

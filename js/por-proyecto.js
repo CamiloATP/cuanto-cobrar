@@ -231,7 +231,7 @@ import currenciesJSON from './currencies.js'; // <-- https://raw.githubuserconte
 
                         formula += `<span class="h5">Beneficio</span>: (<strong>Costo</strong>: ${currenciesFormat(locale, currency, (horaHombre * horas) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}%) <= (${beneficio!== '' ? beneficio : 0}%)<hr>`;
 
-                        formula += `<span class="h5">Costo</span>: ${currenciesFormat(locale, currency, (horaHombre * horas) + gastosExtras)} + <span class="h5">Beneficio</span>: ${currenciesFormat(locale, currency, ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio)}`;
+                        formula += `<span class="h5">Costo</span>: ${currenciesFormat(locale, currency, (horaHombre * horas) + gastosExtras)} + <span class="h5">Beneficio</span>: ${currenciesFormat(locale, currency, ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio)}<hr>`;
 
                         total = ((horaHombre * horas) + gastosExtras) + ((horaHombre * horas) + gastosExtras) * porcentajeBeneficio;
                     }
@@ -248,7 +248,7 @@ import currenciesJSON from './currencies.js'; // <-- https://raw.githubuserconte
 
                         formula += `<span class="h5">Beneficio</span>: (<strong>Costo</strong>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}%) <= (${beneficio!== '' ? beneficio : 0}%)<hr>`;
 
-                        formula += `<span class="h5">Costo</span>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias)) + gastosExtras)} + <span class="h5">Beneficio</span>: ${currenciesFormat(locale, currency, ((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio)}`;
+                        formula += `<span class="h5">Costo</span>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias)) + gastosExtras)} + <span class="h5">Beneficio</span>: ${currenciesFormat(locale, currency, ((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio)}<hr>`;
 
                         total = ((horaHombre * (horas * dias)) + gastosExtras) + ((horaHombre * (horas * dias)) + gastosExtras) * porcentajeBeneficio;
                     }
@@ -265,7 +265,7 @@ import currenciesJSON from './currencies.js'; // <-- https://raw.githubuserconte
 
                         formula += `<span class="h5">Beneficio</span>: (<strong>Costo</strong>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias * semanas)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}%) <= (${beneficio!== '' ? beneficio : 0}%)<hr>`;
 
-                        formula += `<span class="h5">Costo</span>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias * semanas)) + gastosExtras)} + <span class="h5">Beneficio</span>: ${currenciesFormat(locale, currency, ((horaHombre * (horas * dias * semanas)) + gastosExtras) * porcentajeBeneficio)}`; 
+                        formula += `<span class="h5">Costo</span>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias * semanas)) + gastosExtras)} + <span class="h5">Beneficio</span>: ${currenciesFormat(locale, currency, ((horaHombre * (horas * dias * semanas)) + gastosExtras) * porcentajeBeneficio)}<hr>`; 
 
                         total = ((horaHombre * (horas * dias * semanas)) + gastosExtras) + ((horaHombre * (horas * dias * semanas)) + gastosExtras) * porcentajeBeneficio;
                     }
@@ -284,7 +284,7 @@ import currenciesJSON from './currencies.js'; // <-- https://raw.githubuserconte
                         
                         formula += `<span class="h5">Beneficio</span>: (<strong>Costo</strong>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias * semanas * meses)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}%) <= (${beneficio!== '' ? beneficio : 0}%)<hr>`;
                         
-                        formula += `<span class="h5">Costo</span>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias * semanas * meses)) + gastosExtras)} + <span class="h5">Beneficio</span>: ${currenciesFormat(locale, currency, ((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) * porcentajeBeneficio)}`;
+                        formula += `<span class="h5">Costo</span>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias * semanas * meses)) + gastosExtras)} + <span class="h5">Beneficio</span>: ${currenciesFormat(locale, currency, ((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) * porcentajeBeneficio)}<hr>`;
 
                         total = ((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) + ((horaHombre * (horas * dias * semanas * meses)) + gastosExtras) * porcentajeBeneficio;
                     }
@@ -300,6 +300,17 @@ import currenciesJSON from './currencies.js'; // <-- https://raw.githubuserconte
                 metodo.innerHTML = '<span class="h4 font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados:</span><hr>' + formula;
                 resultado.className += ' h2';
                 resultado.innerHTML = `Total: ${currenciesFormat(locale, currency, total)} <i class="fas fa-money-bill-wave"></i>`;
+
+                var result = formula += `<span class="h2 font-weight-bold mb-2"> Total: ${currenciesFormat(locale, currency, total)} <i class="fas fa-money-bill-wave"></i></span>`;
+
+                Swal.fire({
+                    title: '<span class="font-weight-bold mb-2"><i class="fas fa-file-invoice-dollar"></i> Cálculos realizados: </span>',
+                    icon: 'success',
+                    width: '800px',
+                    html: result,
+                    confirmButtonColor: '#28a745',
+                    confirmButtonText: 'Ok!!'
+                });
                 // window.location.hash = '#resultado'; // <-- Focus
             } else {
                 metodo.innerHTML = '';
