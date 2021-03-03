@@ -5,7 +5,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 // const path = require('path');
 
-// > npxnpx webpack
+// > npx webpack
 module.exports = {
 	entry: {
 		"por-proyecto": ['./src/js/por-proyecto.js'],
