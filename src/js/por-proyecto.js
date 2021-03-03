@@ -1,6 +1,10 @@
 import {currenciesFormat, comeBackCash, isValidNumber, messagesError} from './functions.js';
 import localesJSON from './locales.js'; // <-- https://raw.githubusercontent.com/umpirsky/locale-list/master/data/en_US/locales.json
 import currenciesJSON from './currencies.js'; // <-- https://raw.githubusercontent.com/umpirsky/currency-list/master/data/en_US/currency.json
+import Swal from './sweetalert2.all.min.js';
+
+import './../css/bootstrap.min.css';
+import './../css/style.css';
 
 (function() {
     const formulario = document.getElementById('formulario');
