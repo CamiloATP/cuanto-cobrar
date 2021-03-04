@@ -3,7 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
-// const path = require('path');
+const path = require('path');
 
 // > npx webpack
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].js',
-		path: __dirname + '/'
+		path: __dirname + '/public/'
 	},
 	module: {
 		rules: [
@@ -31,7 +31,7 @@ module.exports = {
 				test: /\.css$/i,
 				use: [
 					// {
-					// 	loader: 'style-loader'
+					// 	loader: 'style-loader',
 					// },
 					{
 						loader: MiniCssExtractPlugin.loader
@@ -43,8 +43,20 @@ module.exports = {
 						}
 					}
 				]
-			}
-		  ]
+			},
+			{
+				test: /\.json$/,
+				// type: 'javascript/dynamic', // only for webpack 4+
+				use: [
+					{
+						loader: 'json-import-loader',
+						options: {
+							processPath: path => path,
+						}
+					}
+				],
+			},
+		]
 	},
 	plugins: [
 		new HtmlWebpackPlugin(
@@ -52,7 +64,7 @@ module.exports = {
 				filename: 'index.html',
 				template: './src/index.html',
 				inject: 'body',
-				minify: false
+				// minify: false
 			}
 		),
 		new HtmlWebpackPlugin(
@@ -60,11 +72,12 @@ module.exports = {
 				filename: 'por-hora.html',
 				template: './src/por-hora.html',
 				inject: 'body',
-				minify: false
+				// minify: false
 			}
 		),
 		new MiniCssExtractPlugin({
 			filename: 'bundle.min.css',
+			insert: 'head'
 		})
 	],
 	optimization: {

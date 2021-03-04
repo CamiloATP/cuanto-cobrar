@@ -1,5 +1,6 @@
 body {
-    background-image: url("./../img/swirl_pattern.png");
+    /* background-image: url(./../img/swirl_pattern.png); */
+    background-image: url(swirl_pattern.png);
 }
 
 header {
