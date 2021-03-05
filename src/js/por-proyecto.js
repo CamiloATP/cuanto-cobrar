@@ -248,7 +248,7 @@ import './../css/style.css';
 
                     if(errors.length === 0) 
                     {
-                        formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${currenciesFormat(locale, currency, locale, currency, horaHombre)} * (<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`;
+                        formula = `<span class="h5">Costo</span>: ((<strong>Valor por Hora</strong>: ${currenciesFormat(locale, currency, horaHombre)} * (<strong>Cantidad de Horas</strong>: ${horas} * <strong>Días</strong>: ${dias})) + <strong>Gastos Extras</strong>: ${gastosExtras})<hr>`;
 
                         formula += `<span class="h5">Beneficio</span>: (<strong>Costo</strong>: ${currenciesFormat(locale, currency, (horaHombre * (horas * dias)) + gastosExtras)} * <strong>Porcentaje del beneficio</strong>: ${porcentajeBeneficio}%) <= (${beneficio!== '' ? beneficio : 0}%)<hr>`;
 
